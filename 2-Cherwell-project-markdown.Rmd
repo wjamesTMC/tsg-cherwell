@@ -1,0 +1,2104 @@
+---
+title: "Cherwell Project"
+author: "Bill James / jamesw@csps.com"
+date: "April 30, 2019"
+output: 
+  html_document:
+    self_contained: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Executive Summary
+
+**The Project** This document is a report on the examination of one year's worth of Cherwell ticket data (calendar year 2018) to gain insights into what this data is telling us about duration times, Service Level Agreement (SLA) target achievement, group performance, and if it is possible to forecast a given duration time - and alternatively, when an SLA target might be breached.
+
+**Fiindings** The data, while providing a complete year's worth of information, has certain flaws, the biggest of which is that it reflects inconcsistent recordkeeping on part of the staff (that is, some staff close out a ticket immediately, some batch their recordkeeping weeks or months after the fact). As a result, findings are preliminary (and cautionary).
+
+The data indicate that:
+
+* There are wide variations in staff performance
+* SLA targets - with some exceptions - are almost never met
+* Prioritization, particularly for service requests, is not meaningful
+* Focusing on a few selected areas could greatly improve performance
+* Until recordkeeping is more consistent, and prioritization is more scientific, it is not possible to predict ticket closure times beyond some level of averaging
+
+**Recommendations** The data suggests that the service desk management and team take the following steps:
+
+* *Focus on driving duration times down* through a combination of more consistent recordkeeping across the group and more dedicated management oversight to ensure this is happening. This will enable statistics to be far more reliable because outliers will be eliminated.
+
+* *Rethink SLAs* so that true priority 1's are acted on first. Part of this is to rethink the prioritization scheme; nearly all (99%) of the service requests are prioritized as priority 3's effectively having no prioritization at all. Instead, it becomes a large pile of equally important tickets, making it difficult for staff to differentiate between the truly important. Management may want to consider a 2-level prioritization for both incidents and service requests - for example, 1 day or 2 days for incidents, and 5 days or 10 days for service requests. This, of course, depends on whether or not the clients being supported feel these are fast enough resolution times. That may take some interviewing / surveying to confirm.
+
+* *Stress individual improvement* by making staff aware of their statistics. The wide variations in performance suggest it is possible the staff are unaware of the importance management is putting on SLA achievement and duration times. If staff were shown their performance statistics and provided with weekly updates, it is likely we would see a significant change in overall statistics. 
+
+* *Overall* there are serveral overarching recommendations:
+     + Management must be clear on the metrics they wish to achieve, communicate these to the staff, and build the necessary fields into Cherwell to gather the data to track them. For example, a more granular taxonomy for ticket classification, and the revised prioritization scheme recommended above.
+     + Adopt a weekly aging report to focus staff attention on what did not get closed within (the revised) SLA targets - and discuss why (as a team).
+     + Run the statistics produced by this code periodically - quarterly to semi-annually - to see what progress is being made toward management goals.
+
+\newpage
+
+# Background and Overview
+
+The Service Desk is seeking to improve its services by better managing
+customer tickets, particularly as they relate to SLAs (service level
+agreements). There are several interconnected problems to solve:
+
+* *Ticket Classification Accuracy* (both incidents and service requests) so
+tickets are properly prioritized and enable truly urgent items to be addressed
+first.
+
+* *Customer Expectation Transparency* so that clients have a more
+accurate window for ticket resolution. Workflow Improvement by addressing
+steps and tasks that slow the process down and lack of consistency within
+Operations. 
+
+* *Breach Forecasting* by determining what factors (alone or in
+combination) have the highest probability of causing breaches of the SLA, and
+identifying those for action. 
+
+* *Ticket Forensic Review* of tickets that breached their SLA through
+systematic examination of all  events/logs that led to the breach.
+
+The desired end state is that clients submitting tickets will receive
+immediate confirmation that their request has been received followed by a
+highly-reliable estimate when the request will be resolved. TSG staff can,
+with great confidence, assume that any tickets on the top of the queue are the
+ones most important to address. Improved classification and forecasting reduce
+SLA breaches, and the management team is able to set more precise SLA
+parameters with no degradation in accuracy. The workflow operates consistently
+among all team members, and in those rare cases when an SLA is not met, all of
+the necessary data and reports are available to identify the problems so they
+can be addressed.
+
+In looking at the desired end state:
+
+* Some elements are management activities and are already possible. These include: 
+     + Providing clients with immediate confirmation
+     + Enabling staff to address the highest priority items first 
+     + Consistent workflow among all team members
+
+* The others can be addressed - at least in part - through management steps
+supported by insights from an analysis like this one: 
+     + Improved classification and forecasting 
+     + Setting more precise SLA parameters with no degradation in accuracy 
+     + Data and reports for forensics
+
+This analysis looks at 1 full year of incident and service request data (calendar 2018) to gain insight to address these latter three elements. The analysis consideres the following questions for the data collectively and for both incidents and service requests separately:
+
+* What are the type and nature of the problems? 
+* What kinds of problems are more prevalent? 
+* What are the characteristics of those problems? 
+     + Minimum  to address 
+     + Maximum times to address 
+     + Average times to address 
+     + The standard deviation of duration times
+
+The analysis also seeks to determine if there are any discernable *patterns*
+in the data, for example:
+
+* Do some kinds of problems take longer - and why? 
+* Do some owners resolve problems more quickly than others?
+     + Which owners?
+     + Which problems in particular?
+* Can we accurately predict how long those problems will take?
+
+\newpage
+
+# Approach
+
+A spreadsheet was extracted from Cherwell covering all events (incidets and
+service requests) in calendar 2018. The data set included the following
+fields:
+
+* Incident ID	
+* Customer 
+* Display Name	
+* Created Date Time	
+* SLA Resolve By Deadline	
+* SLA_Time	
+* Closed Date Time
+* Dur_Time                    
+* Status	
+* Short Description	
+* Description	
+* Category	
+* Incident Type	
+* Call Source	
+* Cause	
+* Equipment ID	
+* Owned By	
+* Priority	
+* Requester Department
+
+The analysis then took the following steps:
+
+* Examined the shape of the data and the general characteristics
+* Determined that the data contained many outliers that skewed the data
+* Chose a better "maximum duration" value for a more normal data set
+* Broke the data down into lower graularity problem categories
+* Split the analysis to look at incidents and service requests separately
+* Generated a number of outputs for management, including:
+     + Basic descriptive statistics to be compared with SLA goals
+     + Views of the top problem generators and their characteristics
+     + Views of the problem owners and their speed and efficiency in addressing
+* Providing several views of how to predict likely problem duration
+* Providing management with a set of recommendations on how to proceed
+
+Before proceeding, it will be useful to understand a few terms as used in the analysis:
+
+* *Event* refers to any service desk incident or service request
+* An *incident* refers to an urgent event that must be addressed within 2 days
+* A *service request* refes to an event of lower urgency that can be addressed within 10 days
+* A *category* refers to a type of incident or service request, for example, a password reset, a security breach, or a request to setup and install a computer.
+* A *priority* is assigned to every event using the numbers 1 - 5. A priority 1 is the most urgent.
+* *Duration time* refers to the number of days between event creation and event closure. It measured in calendar days, excluding weekends, giving an approximation of the number of business days it took to close an event.
+* An *SLA* is a service level agreement. It is the stated commitment to the organization of when the event will be addressed. For incidents, this commitment is 2 days; for service requests, it is 10 days.
+
+\newpage
+
+# Descriptive Statistics
+
+We will start the analysis by looking at the general shape and characteristics of the data, determine how many levels down we need to go to get the necessary granularity, and then look at the descriptive statistics for those groupings.
+
+##  General Characteristics of the Data
+
+The original data set had 7130 events overall, split between 1522 incidents (21%) and 5603 service requests (79%). 
+
+When we plot the curve for the entire data set, it does not suggest a normal distribution. Data points appear to be bunched to the left (duration times in the range of 0-30 days or so), and there are a number of outliers, some of which approach a full year in duration. A discussion with the business unit revealed that much of this may be due to inconsistent  recordkeeping; while some staff enter a closure date as soon as an event has been addressed, others may batch their recordkeeping to occur every few months, thereby
+adding unusually high (and consequently incorrect) durations to the mix.
+
+This insight suggests we may get a more accurate / normalized view by cutting
+off the duration times at some lower value, thereby removing the effect of bad
+recordkeeping. Looking at the charts below, it appears that a more reasonable
+point to  is about 30 days. We will start with that value. 
+
+```{r Libraries and Import, echo=FALSE, warning=FALSE}
+#
+# Library setups
+#
+
+# Import libraries
+library(tidyverse)
+library(tidyr)
+library(dslabs)
+library(plyr)
+library(dplyr)
+library(caret)
+library(ggplot2)
+library(ggthemes)
+# library(ggrepel)
+library(gridExtra)
+library(RColorBrewer)
+library(extrafont)
+library(scales)
+library(lubridate)
+library(reshape2)
+
+#
+# Open files and downloads
+#
+
+# Import and Open the Files - first the data file
+data_filename   <- "Cherwell Working Copy Data File.csv"
+
+# Set the duration limit for the entire year
+dur_time_limit  <- 367 # Change this value for shorter duration times
+
+# Establish the data set based on the time limit
+full_dat        <- read.csv(data_filename, stringsAsFactors = FALSE)
+dat             <- full_dat %>% filter(full_dat$Dur_Time < dur_time_limit)
+num_rows        <- nrow(dat)   
+
+# Files of the taxonomy, validations, staff names, and staff rankings
+validations     <- "Validations File.csv"
+Level_codes     <- read.csv(validations, stringsAsFactors = FALSE)
+staff_rankings  <- read.csv("Staff_Ranking.csv")
+staff_names     <- read.csv("SD_Staff_List.csv", stringsAsFactors = FALSE)
+
+num_staff       <- nrow(staff_names)
+
+# Create separate datasets for incidents and service requests
+dat_inc         <- dat %>% filter(dat$IRT == 1)
+num_rows_inc    <- nrow(dat_inc)
+dat_svr         <- dat %>% filter(dat$IRT == 2)
+num_rows_svr    <- nrow(dat_svr)
+
+# Establish basic variables from the taxonomy
+num_L1             <- max(Level_codes$L1C)
+num_L2             <- max(Level_codes$L2C)
+num_L3             <- max(Level_codes$L3C)
+total_combinations <- num_L1 * num_L2 * num_L3
+
+#
+# Plot of entire year events and durations
+#
+
+vdt <- dat$Dur_Time
+df <- as.data.frame(table(vdt))
+ggplot(df, aes(vdt, Freq)) +
+     geom_point() + 
+     theme_economist() +
+     labs(title = "All Events - Duration Time and Frequency", 
+          x = "Duration", 
+          y = "Number of Event Occurrences")
+```
+
+Let's reset and look at the view when we limit the duration time to a **30-day maximum**. Now we begin to see a normal-ish clustering around lower duration times, particularly in the 4-6 day range.
+
+```{r Resetting data for 30-day limit, echo=FALSE, warning=FALSE}
+#
+# Resetting to create the 30-day view and start the analysis
+#
+
+# Re-import and Open the Files - first the data file
+data_filename   <- "Cherwell Working Copy Data File.csv"
+
+# Reset the duration limit
+dur_time_limit  <- 30 # Change this value for shorter duration times
+
+# Establish the data set based on the new time limit
+full_dat        <- read.csv(data_filename, stringsAsFactors = FALSE)
+dat             <- full_dat %>% filter(full_dat$Dur_Time < dur_time_limit + 1)
+num_rows        <- nrow(dat)   
+
+# Reset the incident and service request subsets
+dat_inc         <- dat %>% filter(dat$IRT == 1)
+num_rows_inc    <- nrow(dat_inc)
+
+dat_svr         <- dat %>% filter(dat$IRT == 2)
+num_rows_svr    <- nrow(dat_svr)
+
+#
+# Plot to show distribution of events and durations (30-day limit)
+#
+
+vdt <- dat$Dur_Time
+df <- as.data.frame(table(vdt))
+ggplot(df, aes(vdt, Freq)) +
+     geom_point() + 
+     theme_economist() +
+     labs(title = "Events Duration Time and Frequecy - 30 Day Cutoff", x = "Duration", y = "Number of Event Occurences")
+```
+
+The revised view shows high numbers of events clustered in the 0 to about 16
+day range, with a few events occurring after that. The number of events starts to approach zero (1 or 2 occurrences for a given duration) after that. For this analysis, we are going to assume that the data is "normal enough" and can provide us with enough confidence to look at basic statistics and then make predictions later on.
+
+When plotting the number of events the distribution of all event types against
+*average* duration, we see a more promounced clustering of event types - this
+time in the 4-12 day range. There are still a few outliers but very few (just
+two event types). This further suggests that the "real" group performance is
+in a shorter range of durations - definitely less than 30 days and perhaps
+even ~20 days - and that a few event types tend to take a very long time.
+
+```{r Plot to show Avg Dur vs. Events, echo=FALSE, warning=FALSE}
+# Set up a dataframe to plot duration vs. number of events for a duration time
+mat <- data.frame("L1"       = 1:total_combinations, 
+                  "L2"       = 1:total_combinations,
+                  "L3"       = 1:total_combinations,
+                  "Events"   = 1:total_combinations,
+                  "MaxDur"   = 1:total_combinations,
+                  "MinDur"   = 1:total_combinations,
+                  "AvgDur"   = 1:total_combinations,
+                  "MMSpread" = 1:total_combinations,
+                  "L3Name"   = 1:total_combinations)
+
+# Loop through the data file looking for combinations that actually exist
+counter <- 1
+for(i in 1:num_L1) {
+     for(j in 1:num_L2) {
+          for(k in 1:num_L3) {
+               x <- dat %>% filter(L1C == i & L2C == j & L3C == k)
+               if(nrow(x) != 0) {
+                    mat[counter, 1] <- i
+                    mat[counter, 2] <- j
+                    mat[counter, 3] <- k
+                    mat[counter, 4] <- nrow(x)
+                    mat[counter, 5] <- max(x$Dur_Time)
+                    mat[counter, 6] <- min(x$Dur_Time)
+                    mat[counter, 7] <- round(mean(x$Dur_Time), digits=1)
+                    mat[counter, 8] <- max(x$Dur_Time) - min(x$Dur_Time)
+                    mat[counter, 9] <- Level_codes[k,5]
+                    counter <- counter + 1
+               }
+               else {
+                    mat[counter, 1] <- i
+                    mat[counter, 2] <- j
+                    mat[counter, 3] <- k
+                    mat[counter, 4] <- 0
+                    mat[counter, 5] <- 0
+                    mat[counter, 6] <- 0
+                    mat[counter, 7] <- 0
+                    mat[counter, 8] <- 0
+                    mat[counter, 9] <- Level_codes[k,5]
+                    counter <- counter + 1
+                    return
+               }
+          }
+     }
+}
+
+# Take the newly populated dataframe and eliminate unneeded rows 
+newmat <- mat %>% filter(mat$Events != 0)
+events <- sum(newmat$Events) 
+
+# Plot of number of events by duration time
+newmat %>%
+     ggplot(aes(AvgDur, Events)) +
+     geom_point() + 
+     theme_economist() +
+     labs(title = "Average Duration vs. Number of Events", x = "Average Duration", y = "Number of Events")
+```
+
+A plot of all events against the day of the year gives us another view of event distribution through time (the calendar year). We see clustering below 10 days and then spread out in the 10-30 day range. This shows graphically where the average and median values are likely to be, in that darker clustering between 5-10 days.
+
+It is also fairly clear from this plot that there are *many* events that are not meeting SLA goals of 2 days for incidents and 10 days for service requests. We also see many priority 1's (the darkest dots) well above those SLA's.
+
+```{r Plot showing full year durations, echo=FALSE, warning=FALSE}
+dat %>%
+     ggplot(aes(DOY, Dur_Time, color = Priority)) +
+     geom_point() + 
+     theme_economist() +
+     labs(title = "Event Resolutions - Durations over the Year", x = "Day of the Year", y = "Duration (Days)")
+```
+
+### An Overview of Incidents
+
+The business unit has stated that incidents are more important than service requests - they have greater urgency. Therefore looking at all events together limits our insight; we will next look at them separately to see what additional information we can gather.
+
+When we reduce the dataset to those events with a maximum duration of 30 days, we end up with about 1450 incidents, or about 22% of the total. This is 1% higher than when there are no limits on the duration maximum.
+
+The average (mean) duration time for incidents is just over 6 days (3 times the SLA) with a median of 5 days. If it is true that inconsistent recordkeeping is driving up duration times, this is our first indication. It also provides management with its first real target for improvement if the goal is to meet the 2-day SLA target.
+
+```{r Display Incident Statistics, echo=FALSE, warning=FALSE}
+#*****************************************************************************
+#
+# Overview of Incidents
+#
+#*****************************************************************************
+
+# Descriptive statistics for incidents:
+inc_max_dur <- max(dat_inc$Dur_Time)
+inc_min_dur <- min(dat_inc$Dur_Time)
+inc_avg_dur <- mean(dat_inc$Dur_Time)
+inc_med_dur <- median(dat_inc$Dur_Time)
+inc_abv_med <- nrow(dat_inc %>% filter(Dur_Time >  inc_med_dur))
+inc_eqt_med <- nrow(dat_inc %>% filter(Dur_Time == inc_med_dur))
+inc_bel_med <- nrow(dat_inc %>% filter(Dur_Time <  inc_med_dur))
+inc_rng_dur <- inc_max_dur - inc_min_dur
+
+# Establish the number of incidents by priority 
+inc_count_p1 <- length(which(dat_inc$IRT == 1 & dat_inc$Priority == 1))
+inc_count_p2 <- length(which(dat_inc$IRT == 1 & dat_inc$Priority == 2))
+inc_count_p3 <- length(which(dat_inc$IRT == 1 & dat_inc$Priority == 3))
+inc_count_p4 <- length(which(dat_inc$IRT == 1 & dat_inc$Priority == 4))
+inc_count_p5 <- length(which(dat_inc$IRT == 1 & dat_inc$Priority == 5))
+
+# Establish the incidents by percentage
+inc_tot_percent  <- num_rows_inc / num_rows
+inc_percent_1    <- inc_count_p1 / num_rows_inc
+inc_percent_2    <- inc_count_p2 / num_rows_inc
+inc_percent_3    <- inc_count_p3 / num_rows_inc
+inc_percent_4    <- inc_count_p4 / num_rows_inc
+inc_percent_5    <- inc_count_p5 / num_rows_inc
+
+# Print out summary of incidents by priority and percentage of each
+cat("Total incidents         :", num_rows_inc)
+
+cat("Maximum duration        :", round(inc_max_dur, digits = 1))
+cat("Minimum duration        :", round(inc_min_dur, digits = 1))
+cat("Average duration        :", round(inc_avg_dur, digits = 1))
+cat("Median duration         :", round(inc_med_dur, digits = 1))
+cat("     Number above median:", round(inc_abv_med, digits = 1))
+cat("     Number at median   :", round(inc_eqt_med, digits = 1))
+cat("     Number below median:", round(inc_bel_med, digits = 1))
+cat("Range of duration       :", round(inc_rng_dur, digits = 1))
+```
+
+### An Overview of Service Requests
+
+We see that there is not a significant difference between incident and service request
+duration statistics. The average is slightly higher and the mean is the same. The good news is that, on average, the service request SLA goal of 10 days is being met. We also learn that about many service requests exceed the SLA target.
+
+```{r Display Serv Req Statistics, echo=FALSE, warning=FALSE}
+# Basic statistics
+srs_max_dur <- max(dat_svr$Dur_Time)
+srs_min_dur <- min(dat_svr$Dur_Time)
+srs_avg_dur <- mean(dat_svr$Dur_Time)
+srs_med_dur <- median(dat_svr$Dur_Time)
+srs_abv_med <- nrow(dat_svr %>% filter(Dur_Time >  srs_med_dur))
+srs_eqt_med <- nrow(dat_svr %>% filter(Dur_Time == srs_med_dur))
+srs_bel_med <- nrow(dat_svr %>% filter(Dur_Time <  srs_med_dur))
+srs_rng_dur <- srs_max_dur - srs_min_dur
+
+# Establish the number of Service Requests by priority 
+srs_count_p1 <- length(which(dat_svr$IRT == 2 & dat_svr$Priority == 1))
+srs_count_p2 <- length(which(dat_svr$IRT == 2 & dat_svr$Priority == 2))
+srs_count_p3 <- length(which(dat_svr$IRT == 2 & dat_svr$Priority == 3))
+srs_count_p4 <- length(which(dat_svr$IRT == 2 & dat_svr$Priority == 4))
+srs_count_p5 <- length(which(dat_svr$IRT == 2 & dat_svr$Priority == 5))
+
+# Establish the Service Requests by percentage
+srs_tot_percent  <- num_rows_svr / num_rows
+srs_percent_1    <- srs_count_p1 / num_rows_svr
+srs_percent_2    <- srs_count_p2 / num_rows_svr
+srs_percent_3    <- srs_count_p3 / num_rows_svr
+srs_percent_4    <- srs_count_p4 / num_rows_svr
+srs_percent_5    <- srs_count_p5 / num_rows_svr
+
+srasla <- dat_svr %>% filter(Dur_Time > 10)
+
+# Print out summary of Service Requests by priority and percentage of each
+cat("Total Service Requests  :",num_rows_svr)
+
+cat("Maximum duration        :", round(srs_max_dur, digits = 1))
+cat("Minimum duration        :", round(srs_min_dur, digits = 1))
+cat("Average duration        :", round(srs_avg_dur, digits = 1))
+cat("Median duration         :", round(srs_med_dur, digits = 1))
+cat("     Number above median:", round(srs_abv_med, digits = 1))
+cat("     Number at median   :", round(srs_eqt_med, digits = 1))
+cat("     Number below median:", round(srs_bel_med, digits = 1))
+cat("Range of duration       :", round(srs_rng_dur, digits = 1))
+cat("Number above SLA target :", nrow(srasla))
+```
+
+One big difference that jumps out is that there are far more priority 3
+Service Requests than 1's or 2's; incidents have relatively more priority 1's
+and 2's. We would expect this to be the case. However, we also see that too many of the priority 1's that do exist (darker colored dots) are seeing high duration times; management would like to see these in the 0-2 day range.
+
+```{r Plot of Serv Req Durations, echo=FALSE, warning=FALSE}
+dat_svr %>%
+     ggplot(aes(DOY, Dur_Time, color = Priority)) +
+     geom_point() + scale_y_log10() +
+     theme_economist() + 
+     labs(title = "Service Request Resolutions - Date vs. Duration (log10 y axis)", x = "Day of the Year", y = "Duration (Days)")
+
+#*****************************************************************************
+#
+# Looking Deeper into subcategories
+#
+#*****************************************************************************
+```
+
+### Looking at Subcategories
+
+We have to face the conclusion that, although these data points are
+interesting, even splitting into incidents and service requests tells us only
+a limited amount - not enough to tell us where the problems are or how to forecast
+likely durations as problems come in. More granularity is needed. To aid in this
+analysis, we constructed a 3-level hierarchy / taxonomy to classify incidents
+and service requests in specific categories and thereby to provide the granularity needed for
+analysis and insight. The original data contained a problem description fields, and this was used to make the various classifications. 
+
+The taxonomy has three primary categories (software, infrastructure and other). These could be used for further / higher level analysis at some point. The next level has nine categories - four mapped into software, four more into infrastructure, and a single "other." The final level has 68 categories mapped into the four software categories, thirteen into the infrasturcture categories, and "other" has three categories at the lowest level.
+
+**Analysis Categories / Taxonomy**
+
+```{r Display the Taxonomy, echo=FALSE, warning=FALSE}
+# Display the taxonomy
+Level_codes
+```
+
+Classifying each of the events into these categories took significant time - about 40 hours for the full year of data - as well as another few hours to debug errors in consistency and validation calculations. However, the effort was valuable, because it make it possible to determine what event types were causing the majority of the problems and how long, on average, it was taking to address them. 
+
+When we look at ALL events taken toghether, we can identify those that are causing most of the problems. Of the 89 possible event categories, relatively few are causing most of the problems in an almost perfect "80 / 20 rule". For example: 
+
+```{r Display the Events Causing 80% of Problems, echo=FALSE, warning=FALSE}
+events <- sum(newmat$Events) 
+
+# Sort the dataframe in descending order / largest # of events at the top
+newmat <- newmat[order(newmat$Events, decreasing = TRUE),]
+
+# Second loop to identify the events that = the top 80% of all events; 
+# the variable epi captures the index / row of when we have 80%
+ept    <- events * .8
+epi    <- 0
+for(i in 1:nrow(newmat)) {
+     ifelse(ept <= 0, return, {
+          epi <- i
+          ept <- ept - newmat[i,4]
+     })
+}
+
+# Create the final version of the dataframe and total the events
+finmat <- newmat[c(1:epi), c(1:9)]
+
+# Display the results
+cat("A total of",epi,"combinations account for 80% of all tickets submitted")
+```
+
+```{r Display 80% events List, echo=FALSE, warning=FALSE}
+knitr::kable(finmat)
+```
+
+As noted, this view includes **all** events (incidents and service requests
+combined). Nonetheless, the additional granularity provides a few insights:
+
+* The top problem-causers are a mix of software, infrastructure, and "other" 
+* Many of the top problems appear to be less technical (logins. moves, mail) 
+* Being lower tech, the average durations *might* be relatively easy to reduce
+
+As a side note, "GA and Other" is a general category. Tickets in this category are often
+vague, having problem descriptions such as:
+
+* Is Sally Schwartz's PC PD00396 ok after water leak on P4?
+* Hardware Support
+* Alarm in Tel/Data Room
+* Paco Has Connection Issues
+* Laptop Docking Station Not Working, Need Power Cable For Nearby Monitor
+
+...and are therefore not easily categorized otherwise.
+
+One other note on the taxonomy: the organization relies on many applications to run the business and these were called out in greater detail than might otherwise have been necessary. However, it was considered useful information to zero in on those applications that were requiring the majority of the user problems and consequently the most staff time.
+
+When we plot these categories by number of events of each, we see these dynamics:
+
+* Because there are more categories for software (48), they are spread out, with fewer events per category (left-hand portion of the plot). There are a total of 2552 software events, or 39% of all events.
+* Because there are fewer categories under infrastructure and "other" there tend to be more events under each (right-hand side of the plot). There are 3423 infrastructure events (51%) and 686 "other" events (10%).
+
+As noted above, this is useful; we can immediately see that of the many business applications, Google Apps and Zoom head the list in number of tickets. Presumably, this implies higher staff hours and support costs.
+
+```{r Incidets by category, echo=FALSE, message=FALSE, warning=FALSE}
+newmat %>%
+     ggplot(aes(L3, Events)) +
+     geom_point() + 
+     theme_economist() +
+     labs(title = "Number of Events by Category", x = "Event Category", y = "Number of Events")
+```
+
+A simpler look at this distribution is possible via this bar chart:
+
+```{r Bar Chart of Event Types, echo=FALSE}
+nrs <- nrow(dat %>% filter(L1N == "Software"))
+nri <- nrow(dat %>% filter(L1N == "Infrastructure"))
+nro <- nrow(dat %>% filter(L1N == "Other"))
+pns <- c("1 - Software", "2 - Infrastructure", "3 - Other")
+pnn <- c(nrs, nri, nro)
+dfn <- data.frame(pns, pnn)
+
+# Do plot
+ggplot(data = dfn, aes(x = pns, y = pnn)) +
+     geom_bar(fill = "steelblue", stat="identity") +
+     geom_text(aes(pns, pnn, label = pnn), 
+               vjust = 1.5, color = "white", size = 4) +theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     labs(title="Events by Major Category (SW, Inf, Other)",
+          x="Major Category", y = "Events")
+```
+
+
+Even the event subcategories - interesteing and useful as they are - are not getting us to the bottom of either incidents or service requests, so we will look at those two
+separately, looking at all 89 category types within incidents and service requests.
+
+## Incidents
+
+When we look at incidents broken out by category, we see some interesting data points:
+
+* Functional issues are not only the largest incident category, but they are taking unusually long to resolve (only two categories take longer on average).
+* Access and login issues have very high average durations, posing the question, is it really taking that long to provide access, and if so, is this interrupting the business flow?
+* Zoom seems problematic and deserves futher discussion by the service desk team to understand where these problems are coming from. Are they with the Zoom rooms primarily or with the users themselves?
+* None of these top problem areas have acceptable SLA times - even with a 30-day cutoff for the data set. This chart may be a starting point for management discussion with the staff. 
+
+```{r List of Incidents by Category, echo=FALSE, warning=FALSE}
+#*****************************************************************************
+#
+# Incidents
+#
+#*****************************************************************************
+
+# Define a new dataframe to hold the output
+mat_inc <- data.frame("L1"   = 1:num_rows_inc, 
+                      "L2"       = 1:num_rows_inc,
+                      "L3"       = 1:num_rows_inc,
+                      "Events"   = 1:num_rows_inc,
+                      "MaxDur"   = 1:num_rows_inc,
+                      "MinDur"   = 1:num_rows_inc,
+                      "AvgDur"   = 1:num_rows_inc,
+                      "MMSpread" = 1:num_rows_inc,
+                      "L3Name"   = 1:num_rows_inc)
+
+# Loop through the data file looking for combinations that actually exist
+counter <- 1
+for(i in 1:num_L1) {
+     for(j in 1:num_L2) {
+          for(k in 1:num_L3) {
+               x <- dat_inc %>% filter(L1C == i & L2C == j & L3C == k)
+               if(nrow(x) != 0) {
+                    mat_inc[counter, 1] <- i
+                    mat_inc[counter, 2] <- j
+                    mat_inc[counter, 3] <- k
+                    mat_inc[counter, 4] <- nrow(x)
+                    mat_inc[counter, 5] <- max(x$Dur_Time)
+                    mat_inc[counter, 6] <- min(x$Dur_Time)
+                    mat_inc[counter, 7] <- round(mean(x$Dur_Time), digits=1)
+                    mat_inc[counter, 8] <- max(x$Dur_Time) - min(x$Dur_Time)
+                    mat_inc[counter, 9] <- Level_codes[k,5]
+                    counter <- counter + 1
+               }
+               else {
+                    mat_inc[counter, 1] <- i
+                    mat_inc[counter, 2] <- j
+                    mat_inc[counter, 3] <- k
+                    mat_inc[counter, 4] <- 0
+                    mat_inc[counter, 5] <- 0
+                    mat_inc[counter, 6] <- 0
+                    mat_inc[counter, 7] <- 0
+                    mat_inc[counter, 8] <- 0
+                    mat_inc[counter, 9] <- Level_codes[k,5]
+                    counter <- counter + 1
+                    return
+               }
+          }
+     }
+}
+# Take the newly populated dataframe and eliminate unneeded rows 
+newmat_inc <- mat_inc %>% filter(mat_inc$Events != 0 & mat_inc$L3 <= num_L3)
+
+# Sort the dataframe in descending order / largest # of events at the top
+newmat_inc <- newmat_inc[order(newmat_inc$Events, decreasing=TRUE),]
+
+# Verify that you havev accounted for all 1334 events
+events_inc <- sum(newmat_inc$Events) 
+
+# Second loop to identify the events that = the top 80% of all events
+# The variable epi captures the index / row of when we have 80%
+ept    <- events_inc * .8
+epi    <- 0
+for(i in 1:nrow(newmat_inc)) {
+     ifelse(ept <= 0, return, {
+          epi <- i
+          ept <- ept - newmat_inc[i,4]
+     })
+}
+
+# Create the final version of the dataframe and total the events. If the data
+# file has been properly QA'd, there should be no duplicates in the L3 column
+finmat_inc <- newmat_inc[c(1:epi), c(1:9)]
+
+cat("A total of",epi,"combinations out of",nrow(newmat_inc),"account for 80% of the incidents")
+
+knitr::kable(finmat_inc)
+
+L3_inc_1 <- finmat_inc[1,3]
+L3_inc_2 <- finmat_inc[2,3]
+L3_inc_3 <- finmat_inc[3,3]
+L3_inc_4 <- finmat_inc[4,3]
+L3_inc_5 <- finmat_inc[5,3]
+
+L3_inc_1_name <- finmat_inc[1,9]
+L3_inc_2_name <- finmat_inc[2,9]
+L3_inc_3_name <- finmat_inc[3,9]
+L3_inc_4_name <- finmat_inc[4,9]
+L3_inc_5_name <- finmat_inc[5,9]
+```
+
+We also broke down the top five incident categories to see if there was anything to be learned by breaking out priorities, and if there was any correlation between a given priority and resolution times. For example, if higher priorities had lower rsolution times, that would be a good sign and vice-versa. Further, correlations might tell us something about what happens to durations when the number of incidents increases.
+
+### Top Incident Number 1 - Functional Issues
+
+```{r Incident #1, warning=FALSE, include=FALSE}
+L3_inc_1_name
+```
+
+We see the breakdown by priorty here. Note that a priority 1 is the most urgent, and 5 the least urgent. We expect duration times to lengthen with priority number, but never beyond two days. We see that this is not the case: 
+
+```{r Incident #1 by Priority, echo=FALSE, warning=FALSE}
+#
+# Part 1 
+#
+
+# define a dataframe to hold the output
+df_inc_priorities <- data.frame("Priority" = 1:5,
+                                "Events"   = 1:5,
+                                "MaxDur"   = 1:5,
+                                "MinDur"   = 1:5,
+                                "AvgDur"   = 1:5,
+                                "MMSpread" = 1:5)
+
+# Loop through the data file
+counter <- 1
+for(i in 1:5) {
+     x <- dat_inc %>% filter(L3C == L3_inc_1 & Priority == i)
+     if(nrow(x) != 0) {
+          df_inc_priorities[counter, 1] <- i
+          df_inc_priorities[counter, 2] <- nrow(x)
+          df_inc_priorities[counter, 3] <- max(x$Dur_Time)
+          df_inc_priorities[counter, 4] <- min(x$Dur_Time)
+          df_inc_priorities[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_inc_priorities[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          counter <- counter + 1
+     }
+     else {
+          df_inc_priorities[counter, 1] <- i
+          df_inc_priorities[counter, 2] <- 0
+          df_inc_priorities[counter, 3] <- 0
+          df_inc_priorities[counter, 4] <- 0
+          df_inc_priorities[counter, 5] <- 0
+          df_inc_priorities[counter, 6] <- 0
+          counter <- counter + 1
+          return
+     }
+}
+knitr::kable(df_inc_priorities)
+```
+
+A breakout like this provides some useful observations for team discussion and goal setting. Points that might be worthwhile considering:
+
+* Getting duration times down seems like a clear opportunity - especially Priority 1s and 2s. This is not a statistical issue but rather a management one, that is, by:
+     + Ensuring that events get the right priority classification
+     + Keeping the top priority items visible to the team on a daily basis
+     + Tracking their closure via an aging report
+     + Rewarding staff for addressing items in priority order and reducing resolution times
+* Looking at the number of events are bunched around Priority 3 (are there *really* that many?) and asking if this reflects reality.
+* Considering a different approach to incident priortization, for example: **"fix on same day"** and **""fix by end of day 2""**
+
+**Correlations**
+
+A correlation is when one variable moves with another. Sometimes this is positive
+(when temperatures go up, the faster air molecules move) or negative (the more
+rabbits in a garden, the fewer the lettuces we have). Correlations range from -1
+(strong negative) to +1 (strong positive). A correclation around 0 indicates
+randomness / no correlation. Correlations start to become interesting past the
+0.5 mark, and especially around the 0.8 or 0.9 mark.
+
+We look at these to see what might be driving what. In this case:
+
+* *Maximum duration* is moving with priority (and this would be expected). That is, with a higher priority *nunmber* (which means a lower priorty), we see maximum duration times going up at a 0.77 correlation, which is moderately strong. This may imply that staff are (quite rightly) leaving lower priority items to when they can get to them.
+
+* Events seem to drive *average duration times* negatively at a relatively strong correlation of -0.77 - that is, as the number of incidents goes up, the average time to close on them seems to go down.  While this is counter-intuitive, there could be reasons for this such as staff jumping on a problem set more intensely during a crisis period. However, it deserves discussion with the service desk staff.
+
+
+```{r Incident #1 Correlations, echo=FALSE, warning=FALSE}
+# Correlations
+df_inc_priorities.cor <- cor(df_inc_priorities[-6])
+knitr::kable(df_inc_priorities.cor)
+```
+
+### Top Incident Number 2 - Access and Login
+
+```{r Incident #2 Name, warning=FALSE, include=FALSE}
+L3_inc_2_name
+```
+
+In this 2nd category, we notice that:
+
+* Most are priority 3 to 5; there are very few 1's. This is a little surpising as usually needing to login to a system or desktop is an urgent issue.
+* Average durations are high - even priority 1's are 2x the SLA target.
+
+Given that access and login issues are often resolvable quickly, his seems like an opportunity to dramatically lower average resolution times. And if the incident involves some kind of approval chain, then reclassify it as a service request.
+
+```{r Incident #2 by Priority, echo=FALSE, warning=FALSE}
+# define a dataframe to hold the output
+df_inc_priorities <- data.frame("Priority" = 1:5,
+                                "Events"   = 1:5,
+                                "MaxDur"   = 1:5,
+                                "MinDur"   = 1:5,
+                                "AvgDur"   = 1:5,
+                                "MMSpread" = 1:5)
+
+# Loop through the data file
+counter <- 1
+for(i in 1:5) {
+     x <- dat_inc %>% filter(L3C == L3_inc_2 & Priority == i)
+     if(nrow(x) != 0) {
+          df_inc_priorities[counter, 1] <- i
+          df_inc_priorities[counter, 2] <- nrow(x)
+          df_inc_priorities[counter, 3] <- max(x$Dur_Time)
+          df_inc_priorities[counter, 4] <- min(x$Dur_Time)
+          df_inc_priorities[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_inc_priorities[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          counter <- counter + 1
+     }
+     else {
+          df_inc_priorities[counter, 1] <- i
+          df_inc_priorities[counter, 2] <- 0
+          df_inc_priorities[counter, 3] <- 0
+          df_inc_priorities[counter, 4] <- 0
+          df_inc_priorities[counter, 5] <- 0
+          df_inc_priorities[counter, 6] <- 0
+          counter <- counter + 1
+          return
+     }
+}
+knitr::kable(df_inc_priorities)
+```
+
+**Correlations**
+
+When we look at correlations, we see:
+
+* When the priority goes up (a higher number means a lower priority), both average and maximum durations increase (0.77 and 0.70 respectively). This makes sense (lower priority items should take longer).
+
+* Similarly, when the number of events goes up, both the average and maximum duration times go up with correlations of 0.71 and 0.91 (moderately to very strong). Again, seems right.
+
+* Oddly, the more events, the *shorter* the minimum duration time with a strong correlation of 0.79 - this needs discussion (why is this happening?).
+
+* Average duration and maximum duration are traveling very close together (0.9 correction) suggesting that when events pile up, time suffers.
+
+```{r Incident #2 Correlations, echo=FALSE, warning=FALSE}
+# Correlations 
+df_inc_priorities.cor <- cor(df_inc_priorities[-6])
+knitr::kable(df_inc_priorities.cor)
+```
+
+### Top Incident Number 3 - GA (General Administration) and Other
+
+```{r Incident #3 Name, echo=FALSE, warning=FALSE}
+L3_inc_3_name
+```
+
+As before, priorities are bunched at priority 3, but even more so. Priority 2's have an unusually long average duration relative to other priorities. This suggests that:
+
+* Prioritization is difficult and therefore the default is generally 3
+* Once prioritized, it is difficult to believe the prioritization and therefore problems are addressed more randomly (with 2's suffering the most)
+* There may be some better way to communicate the urgency of items which are in a category that admittedly does not lend itself to a sense of urgency. Alternatively, more precise classification of the kind of problem may give it more visibility and therefore a shorter duration time.
+
+```{r Incident #3 by Priority, echo=FALSE, warning=FALSE}
+#
+# Part 3
+#
+
+# define a dataframe to hold the output
+df_inc_priorities <- data.frame("Priority" = 1:5,
+                                "Events"   = 1:5,
+                                "MaxDur"   = 1:5,
+                                "MinDur"   = 1:5,
+                                "AvgDur"   = 1:5,
+                                "MMSpread" = 1:5)
+
+# Loop through the data file
+counter <- 1
+for(i in 1:5) {
+     x <- dat_inc %>% filter(L3C == L3_inc_3 & Priority == i)
+     if(nrow(x) != 0) {
+          df_inc_priorities[counter, 1] <- i
+          df_inc_priorities[counter, 2] <- nrow(x)
+          df_inc_priorities[counter, 3] <- max(x$Dur_Time)
+          df_inc_priorities[counter, 4] <- min(x$Dur_Time)
+          df_inc_priorities[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_inc_priorities[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          counter <- counter + 1
+     }
+     else {
+          df_inc_priorities[counter, 1] <- i
+          df_inc_priorities[counter, 2] <- 0
+          df_inc_priorities[counter, 3] <- 0
+          df_inc_priorities[counter, 4] <- 0
+          df_inc_priorities[counter, 5] <- 0
+          df_inc_priorities[counter, 6] <- 0
+          counter <- counter + 1
+          return
+     }
+}
+knitr::kable(df_inc_priorities)
+```
+
+**Correlations**
+
+The correlations here are odd, but perhaps explainable:
+
+* There seems to be no correlation between priority and time - that incidents are resolved without regard to their original priority
+* There is a strong correlation between both maximum and minimum durations *at the same time.* This is very strange, suggesting that as work piles up, tickets either get addressed very qucikly or very slowly, with fewer in the middle / average time.
+
+
+```{r Incident #3 Correlations, echo=FALSE, warning=FALSE}
+# Correlations 
+df_inc_priorities.cor <- cor(df_inc_priorities[-6])
+knitr::kable(df_inc_priorities.cor)
+```
+
+### Top Incident Number 4 - Zoom
+
+```{r Incident #4 Name, echo=FALSE, warning=FALSE}
+L3_inc_4_name
+```
+
+It is not surprising that Zoom made the top 10 list. It is the standard for teleconferncing for the organization and most conference rooms are set up to be Zoom rooms. Therefore there are two opportunities for things to go wrong: first with the user; second, with the physical equipment in the room; and third, with the connectivity between the hardware pieces and infrastructure. 
+
+```{r Incident 4 Plot, echo=FALSE}
+#
+# Part 4
+#
+
+# define a dataframe to hold the output
+df_inc_priorities <- data.frame("Priority" = 1:5,
+                                "Events"   = 1:5,
+                                "MaxDur"   = 1:5,
+                                "MinDur"   = 1:5,
+                                "AvgDur"   = 1:5,
+                                "MMSpread" = 1:5)
+
+# Loop through the data file
+counter <- 1
+for(i in 1:5) {
+     x <- dat_inc %>% filter(L3C == L3_inc_4 & Priority == i)
+     if(nrow(x) != 0) {
+          df_inc_priorities[counter, 1] <- i
+          df_inc_priorities[counter, 2] <- nrow(x)
+          df_inc_priorities[counter, 3] <- max(x$Dur_Time)
+          df_inc_priorities[counter, 4] <- min(x$Dur_Time)
+          df_inc_priorities[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_inc_priorities[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          counter <- counter + 1
+     }
+     else {
+          df_inc_priorities[counter, 1] <- i
+          df_inc_priorities[counter, 2] <- 0
+          df_inc_priorities[counter, 3] <- 0
+          df_inc_priorities[counter, 4] <- 0
+          df_inc_priorities[counter, 5] <- 0
+          df_inc_priorities[counter, 6] <- 0
+          counter <- counter + 1
+          return
+     }
+}
+
+# Display the results
+knitr::kable(df_inc_priorities)
+
+# Plot the priorities
+ggplot(data = df_inc_priorities, aes(x = Priority, y = Events)) +
+     geom_bar(fill = "steelblue", stat="identity") +
+     geom_text(aes(Priority, Events, label = Events), 
+               vjust = 1.5, color = "white", size = 4) + theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     labs(title="Events by Priority", x="Priority", y = "Events")
+```
+
+The "curve" of the data here has more of the look of a normal distribution - most values are in the middle (priority 3) with roughly equal numbers of events in priority 2 and 4, and again with priorities 1 and 5. This is a little more like we would expect as the norm.
+
+Average durations are still not meeting SLAs overall and are particularly problematic for Priority 1's (highest average duration, second highest maximum duration). 
+
+**Correlations **
+
+As we have seen in a couple of other instances, in this case, Priority is driving average duration downward, which is not what we would expect; because a higher priority number means a lower priority in urgency, we would expect average duration to go up, not down.
+
+In the case of events, we are seeing that the number of incidents *increase* the maximum duration while simultaneously *decreasing* the minimum duration. As seen earlier, is this because as the work piles up, things tend to get done either very fast or very slow?
+
+```{r Incident #4 Correlations, echo=FALSE, warning=FALSE}
+df_inc_priorities.cor <- cor(df_inc_priorities[-6])
+knitr::kable(df_inc_priorities.cor)
+```
+
+### Top Incident Number 5 - Printing / Scanning
+
+As in the case of Zoom, the distribution is more normal-like but to a lesser degree; while priorities 2, 3, and 4 look about right, there is an imbalance between priorities 1 and 5.
+
+As we have seen before, the average durations for the various priorities seem more random than purposeful, and the average duration for priority 1 seems particularly problematic. It suggests (as similar cases have suggested) that service desk staff need to assign priorities accurately, and then focus on the top priorities first. This would likely produce (over time) a normally distributed data shape with very low average durations (under 2 days) for higher priority tickets.
+
+```{r Incident 5 Plot, echo=FALSE}
+#
+# Part 5
+#
+
+# define a dataframe to hold the output
+df_inc_priorities <- data.frame("Priority" = 1:5,
+                                "Events"   = 1:5,
+                                "MaxDur"   = 1:5,
+                                "MinDur"   = 1:5,
+                                "AvgDur"   = 1:5,
+                                "MMSpread" = 1:5)
+
+# Loop through the data file
+counter <- 1
+for(i in 1:5) {
+     x <- dat_inc %>% filter(L3C == L3_inc_5 & Priority == i)
+     if(nrow(x) != 0) {
+          df_inc_priorities[counter, 1] <- i
+          df_inc_priorities[counter, 2] <- nrow(x)
+          df_inc_priorities[counter, 3] <- max(x$Dur_Time)
+          df_inc_priorities[counter, 4] <- min(x$Dur_Time)
+          df_inc_priorities[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_inc_priorities[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          counter <- counter + 1
+     }
+     else {
+          df_inc_priorities[counter, 1] <- i
+          df_inc_priorities[counter, 2] <- 0
+          df_inc_priorities[counter, 3] <- 0
+          df_inc_priorities[counter, 4] <- 0
+          df_inc_priorities[counter, 5] <- 0
+          df_inc_priorities[counter, 6] <- 0
+          counter <- counter + 1
+          return
+     }
+}
+
+# Display the results
+knitr::kable(df_inc_priorities)
+
+# Plot the priorities
+ggplot(data = df_inc_priorities, aes(x = Priority, y = Events)) +
+     geom_bar(fill = "steelblue", stat="identity") +
+     geom_text(aes(Priority, Events, label = Events), 
+               vjust = 1.5, color = "white", size = 4) + theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     labs(title="Events by Priority", x="Priority", y = "Events")
+```
+
+**Correlations**
+
+The only strong correlation in this case is the number of events and average duration. It is (again) odd that the more tickets, the lower the average duration.
+
+```{r Incident #5 Correlations, echo=FALSE, warning=FALSE}
+df_inc_priorities.cor <- cor(df_inc_priorities[-6])
+knitr::kable(df_inc_priorities.cor)
+```
+
+## Service Requests
+
+We now turn our attention to **service requests**, following a path similar to the one we
+took for incidents. Looking through the data file, we find that there are
+5209 service requests, and learn that:
+
+```{r Set up Dataframe for SR , echo=FALSE, warning=FALSE}
+# Define a new dataframe to hold the output
+mat_svr <- data.frame("L1"       = 1:num_rows_svr, 
+                      "L2"       = 1:num_rows_svr,
+                      "L3"       = 1:num_rows_svr,
+                      "Events"   = 1:num_rows_svr,
+                      "MaxDur"   = 1:num_rows_svr,
+                      "MinDur"   = 1:num_rows_svr,
+                      "AvgDur"   = 1:num_rows_svr,
+                      "MMSpread" = 1:num_rows_svr,
+                      "L3Name"   = 1:num_rows_svr)
+
+# Loop through the data file looking for combinations that actually exist
+counter <- 1
+for(i in 1:num_L1) {
+     for(j in 1:num_L2) {
+          for(k in 1:num_L3) {
+               x <- dat_svr %>% filter(L1C == i & L2C == j & L3C == k)
+               if(nrow(x) != 0) {
+                    mat_svr[counter, 1] <- i
+                    mat_svr[counter, 2] <- j
+                    mat_svr[counter, 3] <- k
+                    mat_svr[counter, 4] <- nrow(x)
+                    mat_svr[counter, 5] <- max(x$Dur_Time)
+                    mat_svr[counter, 6] <- min(x$Dur_Time)
+                    mat_svr[counter, 7] <- round(mean(x$Dur_Time), digits=1)
+                    mat_svr[counter, 8] <- max(x$Dur_Time) - min(x$Dur_Time)
+                    mat_svr[counter, 9] <- Level_codes[k,5]
+                    counter <- counter + 1
+               }
+               else {
+                    mat_svr[counter, 1] <- i
+                    mat_svr[counter, 2] <- j
+                    mat_svr[counter, 3] <- k
+                    mat_svr[counter, 4] <- 0
+                    mat_svr[counter, 5] <- 0
+                    mat_svr[counter, 6] <- 0
+                    mat_svr[counter, 7] <- 0
+                    mat_svr[counter, 8] <- 0
+                    mat_svr[counter, 9] <- Level_codes[k,5]
+                    counter <- counter + 1
+                    return
+               }
+          }
+     }
+}
+# Take the newly populated dataframe and eliminate unneeded rows 
+newmat_svr <- mat_svr %>% filter(mat_svr$Events != 0 & mat_svr$L3 < 90)
+
+# Sort the dataframe in descending order / largest # of events at the top
+newmat_svr <- newmat_svr[order(newmat_svr$Events, decreasing=TRUE),]
+
+# Verify that you have accounted for all events
+events_svr <- sum(newmat_svr$Events) 
+
+# Second loop to identify the events that = the top 80% of all events
+# The variable epi captures the index / row of when we have 80%
+ept    <- events_svr * .8
+epi    <- 0
+for(i in 1:nrow(newmat_svr)) {
+     ifelse(ept <= 0, return, {
+          epi <- i
+          ept <- ept - newmat_svr[i,4]
+     })
+}
+
+# Create the final version of the dataframe and total the events. If the data
+# file has been properly QA'd, there should be no duplicates in the L3 column
+
+finmat_svr <- newmat_svr[c(1:epi), c(1:9)]
+cat("A total of",epi,"combinations out of",nrow(newmat_svr),"account for 80% of the service requests")
+
+knitr::kable(finmat_svr)
+
+# As before, create the names and codes for the top 5 requests
+L3_svr_1 <- finmat_svr[1,3]
+L3_svr_2 <- finmat_svr[2,3]
+L3_svr_3 <- finmat_svr[3,3]
+L3_svr_4 <- finmat_svr[4,3]
+L3_svr_5 <- finmat_svr[5,3]
+
+L3_svr_1_name <- finmat_svr[1,9]
+L3_svr_2_name <- finmat_svr[2,9]
+L3_svr_3_name <- finmat_svr[3,9]
+L3_svr_4_name <- finmat_svr[4,9]
+L3_svr_5_name <- finmat_svr[5,9]
+```
+
+When we look at Service Requests, we find that the top five:
+
+* Have 300 or more tickets
+* Constitute 42% of all requests
+* Have an average duration ranging from 5.6 to 9.2 days (under the SLA)
+* Do not appear to be overly complex problems to solve
+
+Taken together, this provides a very good opportunity to reduce duration times and improve customer satisfaction. Service requests, because their SLA target is considerably more forgiving than incidents, have a much higher success rate - 85% of service requests are completed in 10 days or less.
+
+Let's look a little closer at the top 5 generators of service request tickets. 
+
+### Top Service Request Number 1 - Setup and Installs
+
+```{r SR 1 Name, echo=FALSE, warning=FALSE}
+L3_svr_1_name
+```
+
+Not surprisingly, with all of the coming and going of staff and interns, setup and install requests lead the service requiests. Because these are rarely incidents (generally they are planned some time in advance), we expect that they will be comfortably within the SLA target; however, we see that, on average, it is pushing the limit at over 9 days.
+
+We also see that essentially *ALL* of the requests (in fact all but 9) are priority 3, and that there are **NO** priority 4 or 5 service requests. It turns out that there are no priority 4 and 5 service requests of any kind. This implies that service requests have, in effect, no realy prioritization. This might be fine, the sheer volume of them (over 5,000 annualy) means that we need *some* mechanism to determine what to work on next. If something is truly critical / urgent, make it an incident. If it is truly a service request, they need to be grouped in some way that implies priortiy.
+
+```{r SR 1 Dataframe, echo=FALSE, warning=FALSE}
+#
+# Part 1 
+#
+
+# define a dataframe to hold the output
+df_svr_priorities <- data.frame("Priority" = 1:5,
+                                "Events"   = 1:5,
+                                "MaxDur"   = 1:5,
+                                "MinDur"   = 1:5,
+                                "AvgDur"   = 1:5,
+                                "MMSpread" = 1:5)
+
+# Loop through the data file
+counter <- 1
+for(i in 1:5) {
+     x <- dat_svr %>% filter(L3C == L3_svr_1 & Priority == i)
+     if(nrow(x) != 0) {
+          df_svr_priorities[counter, 1] <- i
+          df_svr_priorities[counter, 2] <- nrow(x)
+          df_svr_priorities[counter, 3] <- max(x$Dur_Time)
+          df_svr_priorities[counter, 4] <- min(x$Dur_Time)
+          df_svr_priorities[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_svr_priorities[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          counter <- counter + 1
+     }
+     else {
+          df_svr_priorities[counter, 1] <- i
+          df_svr_priorities[counter, 2] <- 0
+          df_svr_priorities[counter, 3] <- 0
+          df_svr_priorities[counter, 4] <- 0
+          df_svr_priorities[counter, 5] <- 0
+          df_svr_priorities[counter, 6] <- 0
+          counter <- counter + 1
+          return
+     }
+}
+cat("Priority Breakdown for service request category 1:",L3_svr_1_name)
+knitr::kable(df_svr_priorities)
+```
+
+**Correlations**
+
+There are two strong correlations here - priority is driving both average duration and minimum duration (making them shorter). Neither of these makes much sense, as it implies that the lower the priority (remember, a higher the priority number, the lower the priority), the faster it gets done. This needs discussion - is it because there is effectively no priority here (that is, the 9 non-priority 3 requests are skewing the data)? Or is it because tickets are being taken at random from this massive pile of priority 3's and being closed in a variety of ways? This is worth management time to figure out.
+
+```{r SR 1 Correlations, echo=FALSE, warning=FALSE}
+df_svr_priorities.cor <- cor(df_svr_priorities[-6])
+knitr::kable(df_svr_priorities.cor)
+```
+
+### Top Service Request Number 2 - Mail (Email)
+     
+```{r SR 2 Nmae, echo=FALSE, warning=FALSE}
+L3_svr_2_name
+```
+
+The sheer magnitude of email usage makes it no surprise that this is high on th elist. Once again, however, we see that only 7 of 502 requests are *not* priority 3. As a result, we have data questions similar to those with Setup and Installs. Additionally, however, it is disturbing to see the few priority 1's hav such long average duration times, *especially with* a 30-day cutoff. The good news is that priority 2's and 3's are well within the range of acceptable SLA times.
+
+```{r SR 2 Dataframe, echo=FALSE, warning=FALSE}
+#
+# Part 2 
+#
+
+# define a dataframe to hold the output
+df_svr_priorities <- data.frame("Priority" = 1:5,
+                                "Events"   = 1:5,
+                                "MaxDur"   = 1:5,
+                                "MinDur"   = 1:5,
+                                "AvgDur"   = 1:5,
+                                "MMSpread" = 1:5)
+
+# Loop through the data file
+counter <- 1
+for(i in 1:5) {
+     x <- dat_svr %>% filter(L3C == L3_svr_2 & Priority == i)
+     if(nrow(x) != 0) {
+          df_svr_priorities[counter, 1] <- i
+          df_svr_priorities[counter, 2] <- nrow(x)
+          df_svr_priorities[counter, 3] <- max(x$Dur_Time)
+          df_svr_priorities[counter, 4] <- min(x$Dur_Time)
+          df_svr_priorities[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_svr_priorities[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          counter <- counter + 1
+     }
+     else {
+          df_svr_priorities[counter, 1] <- i
+          df_svr_priorities[counter, 2] <- 0
+          df_svr_priorities[counter, 3] <- 0
+          df_svr_priorities[counter, 4] <- 0
+          df_svr_priorities[counter, 5] <- 0
+          df_svr_priorities[counter, 6] <- 0
+          counter <- counter + 1
+          return
+     }
+}
+cat("Priority Breakdown for service request category 2:",L3_svr_2_name)
+knitr::kable(df_svr_priorities)
+```
+
+**Correlations**
+
+We see again the strange behavior of minimum and average duration times going down as the priority number goes higher. In addition, we are seeing that, as the number of events (service requests) increases, so does the maximum duration. Taken together, this implies (as before) that the mass of priority 3's really means there is, practically speaking, no prioritization, and as events pile up, some of those 3's age for a long time.
+
+```{r SR 2 Correlations, echo=FALSE, warning=FALSE}
+df_svr_priorities.cor <- cor(df_svr_priorities[-6])
+knitr::kable(df_svr_priorities.cor)
+```
+
+### Top Service Request Number 3 - Access and Login
+     
+```{r SR 3 Name, echo=FALSE, warning=FALSE}
+L3_svr_3_name
+```
+
+As in the case of the others, nearly all events are bunched around Priority 3, again suggesting that this is a general oddbins category for any request unless something in the definitively sets it apart. Average durations are respectable (under 6 days in each case), and all the priority 1's are within the SLA. This is what we want to see.
+
+```{r SR 3 Dataframe, echo=FALSE, warning=FALSE}
+#
+# Part 3
+#
+
+# define a dataframe to hold the output
+df_svr_priorities <- data.frame("Priority" = 1:5,
+"Events"   = 1:5,
+"MaxDur"   = 1:5,
+"MinDur"   = 1:5,
+"AvgDur"   = 1:5,
+"MMSpread" = 1:5)
+
+# Loop through the data file
+counter <- 1
+     for(i in 1:5) {
+          x <- dat_svr %>% filter(L3C == L3_svr_3 & Priority == i)
+          if(nrow(x) != 0) {
+               df_svr_priorities[counter, 1] <- i
+               df_svr_priorities[counter, 2] <- nrow(x)
+               df_svr_priorities[counter, 3] <- max(x$Dur_Time)
+               df_svr_priorities[counter, 4] <- min(x$Dur_Time)
+               df_svr_priorities[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+               df_svr_priorities[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          counter <- counter + 1
+          }
+          else {
+               df_svr_priorities[counter, 1] <- i
+               df_svr_priorities[counter, 2] <- 0
+               df_svr_priorities[counter, 3] <- 0
+               df_svr_priorities[counter, 4] <- 0
+               df_svr_priorities[counter, 5] <- 0
+               df_svr_priorities[counter, 6] <- 0
+               counter <- counter + 1
+               return
+          }
+     }
+cat("Priority Breakdown for service request category 3:",L3_svr_3_name)
+knitr::kable(df_svr_priorities)
+```
+
+**Correlations**
+
+We see, as before, lower priorities (3's, presumably) driving minimum and average durations down and events driving maximum durations up. Again, the latter makes sense, and the former does not. To be fair however, the high percentage of events that are priority 3 make it virtually impossible to see any true correlations clearly.
+
+```{r SR 3 Correlations, echo=FALSE, warning=FALSE}
+df_svr_priorities.cor <- cor(df_svr_priorities[-6])
+knitr::kable(df_svr_priorities.cor)
+```
+
+### Top Service Request Number 4 - GA and Other
+
+```{r SR 4 Name, echo=FALSE, warning=FALSE}
+L3_svr_4_name
+```
+
+This is a difficult category to deal with, as it contains administrative tasks, notes to users, requests for not otherwise classifiable services, and miscellaneous email. Once again, nearly all requests are priority 3s, and between the variations within the category and the single prioritization, this does not tell us much.
+
+```{r SR 4 Dataframe, echo=FALSE, warning=FALSE}
+#
+# Part 4
+#
+
+# define a dataframe to hold the output
+df_svr_priorities <- data.frame("Priority" = 1:5,
+                                "Events"   = 1:5,
+                                "MaxDur"   = 1:5,
+                                "MinDur"   = 1:5,
+                                "AvgDur"   = 1:5,
+                                "MMSpread" = 1:5)
+
+# Loop through the data file
+counter <- 1
+for(i in 1:5) {
+     x <- dat_svr %>% filter(L3C == L3_svr_4 & Priority == i)
+     if(nrow(x) != 0) {
+          df_svr_priorities[counter, 1] <- i
+          df_svr_priorities[counter, 2] <- nrow(x)
+          df_svr_priorities[counter, 3] <- max(x$Dur_Time)
+          df_svr_priorities[counter, 4] <- min(x$Dur_Time)
+          df_svr_priorities[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_svr_priorities[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          counter <- counter + 1
+     }
+     else {
+          df_svr_priorities[counter, 1] <- i
+          df_svr_priorities[counter, 2] <- 0
+          df_svr_priorities[counter, 3] <- 0
+          df_svr_priorities[counter, 4] <- 0
+          df_svr_priorities[counter, 5] <- 0
+          df_svr_priorities[counter, 6] <- 0
+          counter <- counter + 1
+          return
+     }
+}
+cat("Priority Breakdown for service request category 4:",L3_svr_4_name)
+knitr::kable(df_svr_priorities)
+```
+
+**Correlations**
+
+We conce again have the odd coincidence of lower priority items driving the average and minimum durations down. And as before, we see increasing numbers of events driving the maximum duration time up. And as before, the latter makes sense but the former does not - and no doubt the same reasons apply: too many priority 3's to be able to distinguish what is driving what.
+
+```{r SR 4 Correlations, echo=FALSE, warning=FALSE}
+df_svr_priorities.cor <- cor(df_svr_priorities[-6])
+knitr::kable(df_svr_priorities.cor)
+```
+
+### Top Service Request Number 5 - Move / Close / Remove
+
+```{r SR 5 Name, echo=FALSE, warning=FALSE}
+L3_svr_5_name
+```
+
+Like setups and installs, these events are fairly common, and for the same reason: staff and interns come and go; old equipment is turned in and new equipment issued and so forth.
+
+The bunching at priority 3 is extreme once again, and so once again we lose our ability to see clearly what is actually happening. This is compounded by the two priority 2's sitting out there with an average duration of 29.0 days - suggesting late recordkeeping.
+
+```{r SR 5 Dataframe, echo=FALSE, warning=FALSE}
+#
+# Part 5
+#
+
+# define a dataframe to hold the output
+df_svr_priorities <- data.frame("Priority" = 1:5,
+                                "Events"   = 1:5,
+                                "MaxDur"   = 1:5,
+                                "MinDur"   = 1:5,
+                                "AvgDur"   = 1:5,
+                                "MMSpread" = 1:5)
+
+# Loop through the data file
+counter <- 1
+for(i in 1:5) {
+     x <- dat_svr %>% filter(L3C == L3_svr_5 & Priority == i)
+     if(nrow(x) != 0) {
+          df_svr_priorities[counter, 1] <- i
+          df_svr_priorities[counter, 2] <- nrow(x)
+          df_svr_priorities[counter, 3] <- max(x$Dur_Time)
+          df_svr_priorities[counter, 4] <- min(x$Dur_Time)
+          df_svr_priorities[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_svr_priorities[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          counter <- counter + 1
+     }
+     else {
+          df_svr_priorities[counter, 1] <- i
+          df_svr_priorities[counter, 2] <- 0
+          df_svr_priorities[counter, 3] <- 0
+          df_svr_priorities[counter, 4] <- 0
+          df_svr_priorities[counter, 5] <- 0
+          df_svr_priorities[counter, 6] <- 0
+          counter <- counter + 1
+          return
+     }
+}
+cat("Priority Breakdown for service request category 5:",L3_svr_5_name)
+knitr::kable(df_svr_priorities)
+```
+
+**Correlations**
+
+For what value the correlations may provide, we see higher numbers of events increasing the maximum duration times (this is logical), and the three duration values (average, min, and max) traveling together; that is, they appear to go up together. In the absence of any better data, this seems normal.
+
+```{r SR 5 Correlations, echo=FALSE, warning=FALSE}
+df_svr_priorities.cor <- cor(df_svr_priorities[-6])
+knitr::kable(df_svr_priorities.cor)
+```
+
+\newpage
+
+# Events and Owners
+
+Just as no two event categories are the same - each has unique characteristics, levels of complexity, requirements to address, etc., so staff members have unique characteristics in terms of ability, experience, speed with which they can address a given problem, and so forth. This section looks at service desk staff and sees how they are performing relative to:
+     
+* The sheer numbers of incidents and service requests
+* How long it takes them on average to address an event
+* The standard deviation of those durations
+
+The standard deviation is included because it is a proxy for how long it takes a given person to get a given set of tickets closed. In this context, it describes  the spread in days to address the first 68% of the events handled. It is useful to compare average duration and standard deviation when considering a given person's performance. We want *both* to be low - not only the average time it takes to address an issue, but also, the number of days it takes to address a given set of issues.
+
+Using the 68-95-99 rule of standard deviations, a normally distributed data set will have 68% of the data points within the first standard deviation, 95% within two deviations, and 99% within three. In our context, we are talking days of duration. For example, if a staff member typically addresses a given set of service requests in 3.5 days, with a  standard deviation of 2 days, this person would likely complete 95% of his or her service requests within 2 standard deviations (4 days), and 99% of them in 6 days. We would like this if we were talking service requests, as all the work would be completed within the SLA target. We would feel less good about it if we were talking incidents.
+
+In like manner, a poorer performer might have an average duration of 3.5 days, but have a standard deviation of 5 days, meaning that it takes 15 days to close a given set of tickets. This is well outside of all service level targets.
+
+## Incidents
+     
+We look first at how well the staff was able to handle the ~1450 incidents over the year. In the plots below: 
+
+* The first compares owners to the number of incidents handled. More incidents handled is, all things being equal, better.
+* The second looks at the average duration time to handle an incident. In this case, we are looking for the lowest possible duration.
+* The last shows the standard deviation. As in the case of average duration, a lower value is an indicator of better performance (fewer days needed to complete a body of work).
+
+```{r Set up Dataframe for Owner Plots, warning=FALSE, include=FALSE}
+# Set up the list of owners to go through
+owners_list <- staff_names %>% filter(SD == "Y")
+x_range_for_plot_max <- nrow(owners_list)
+
+# define a dataframe to hold the output
+df_inc_owners <- data.frame("Owner_ID" = 1:x_range_for_plot_max,
+                            "Events"   = 1:x_range_for_plot_max,
+                            "MaxDur"   = 1:x_range_for_plot_max,
+                            "MinDur"   = 1:x_range_for_plot_max,
+                            "AvgDur"   = 1:x_range_for_plot_max,
+                            "MMSpread" = 1:x_range_for_plot_max,
+                            "SD"       = 1:x_range_for_plot_max,
+                            "Owner"    = 1:x_range_for_plot_max)
+
+# Loop through the data file
+counter <- 1
+for(i in owners_list$Owner_ID) {
+     x <- dat_inc %>% filter(Owner_ID == i)
+     if(nrow(x) != 0) {
+          df_inc_owners[counter, 1] <- i
+          df_inc_owners[counter, 2] <- nrow(x)
+          df_inc_owners[counter, 3] <- max(x$Dur_Time)
+          df_inc_owners[counter, 4] <- min(x$Dur_Time)
+          df_inc_owners[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_inc_owners[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          df_inc_owners[counter, 7] <- round(sd(x$Dur_Time), digits=1)
+          df_inc_owners[counter, 8] <- staff_names[i,1]
+          counter <- counter + 1
+     }
+     else {
+          df_inc_owners[counter, 1] <- i
+          df_inc_owners[counter, 2] <- 0
+          df_inc_owners[counter, 3] <- 0
+          df_inc_owners[counter, 4] <- 0
+          df_inc_owners[counter, 5] <- 0
+          df_inc_owners[counter, 6] <- 0
+          df_inc_owners[counter, 7] <- 0
+          df_inc_owners[counter, 8] <- staff_names[i,1]
+          counter <- counter + 1
+          }
+}
+knitr::kable(df_inc_owners)
+```
+
+We see a tiering effect here - two staffers are handling very high numbers of incidents, a second tier group of four handling over 100 incidents, and a final tier of five where very few incidents are handled. To be fair, this is not enough inormation to make a judgment, as we do not know, for example, if some of these lower numbers are because the staff member was actually fully engaged with service requests.
+
+```{r Plot - Incidents Owners vs. Number, echo=FALSE, warning=FALSE}
+ggplot(data = df_inc_owners, aes(x=Owner, y=Events)) +
+     geom_bar(fill = "steelblue", stat="identity") +
+     geom_text(aes(Owner, Events, label = Events), 
+               vjust = -0.4, color = "black", size = 3.5) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     labs(title="Incidents - Events by Owner",
+          x="Owner Name", y = "Incidents")
+```
+
+We are pleased to see that we have a couple of potential superstars on the team, but the next question would be, how quickly do they handle all of those? And what about those who handle fewer? Are they able to handle them faster because they have fewer?
+
+Looking at average duration times we see that the two staffers handling the larger numbers of incidents are also very competitive when it comes to duration times. The same is not true of the first staffer, who handled relatively few incidents and also tends to take a good deal longer to close an incident. We have already learned through interviews, however, that this is a case where recordkeeping is batched; therefore we cannot accurately reflect the time is actually took to close on those tickets.
+
+```{r Plot - Incidents Owners vs. Avg Duration, echo=FALSE, warning=FALSE}
+ggplot(data=df_inc_owners, aes(x=Owner, y=AvgDur)) +
+     geom_bar(fill = "steelblue", stat="identity") + 
+     geom_text(aes(Owner, AvgDur, label = AvgDur), 
+               vjust = -0.5, color = "black", size = 3.5) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     labs(title="Incidents - Average Duration (Days) by Owner",
+          x="Owner Name", y = "Average Duration")
+```
+
+When we look standard deviations, we see that the two staffers handling the most incidents are also very competitive relative to the total time needed to handle a given set of them. We also see one staff member with a standard deviation of 1.9, which implies that in that one case, 68% of the tickets would be addressed within the SLA target.
+
+```{r Plot - Incidents Owners vs. SD, echo=FALSE, warning=FALSE}
+ggplot(df_inc_owners, aes(x=Owner, y=SD)) +
+     geom_bar(fill = "steelblue", stat="identity") +
+     geom_text(aes(Owner, SD, label = SD), 
+               vjust = -0.5, color = "black", size = 3.5) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     labs(title="Incidents - Standard Deviations by Owner",
+          x="Owner Name", y = "Standard Deviation")
+```
+
+We can think of the standard deviation as a kind of efficiency metric, and we see a kind of efficiency tiering here. Five staff have standard deviations of under 3; four more are in the range of 3-6, and 2 are above that. In this case too, there may be *very* good reasons for this - a person might be generally assigned to longer-term projects or particularly knotty problems.
+
+## Service Requests
+
+When we look at service requests we see a different set of dynamics for numbers of tickets addressed. One staff member is handling 39% of the requests, and the rest of the team about one-tenth that number on average. As noted before, there may be very good reasons for this, but we also remember that this same staff member was handling many incident tickets as well.
+
+```{r Set up Dataframe for SR Owner Plots, echo=FALSE, warning=FALSE}
+# Set up the list of owners to go through
+owners_list <- staff_names %>% filter(SD == "Y")
+x_range_for_plot_max <- nrow(owners_list)
+
+# define a dataframe to hold the output
+df_svr_owners <- data.frame("Owner_ID" = 1:x_range_for_plot_max,
+                            "Events"   = 1:x_range_for_plot_max,
+                            "MaxDur"   = 1:x_range_for_plot_max,
+                            "MinDur"   = 1:x_range_for_plot_max,
+                            "AvgDur"   = 1:x_range_for_plot_max,
+                            "MMSpread" = 1:x_range_for_plot_max,
+                            "SD"       = 1:x_range_for_plot_max,
+                            "Owner"    = 1:x_range_for_plot_max)
+
+# Loop through the data file
+counter <- 1
+for(i in owners_list$Owner_ID) {
+     x <- dat_svr %>% filter(Owner_ID == i)
+     if(nrow(x) != 0) {
+          df_svr_owners[counter, 1] <- i
+          df_svr_owners[counter, 2] <- nrow(x)
+          df_svr_owners[counter, 3] <- max(x$Dur_Time)
+          df_svr_owners[counter, 4] <- min(x$Dur_Time)
+          df_svr_owners[counter, 5] <- round(mean(x$Dur_Time), digits=1)
+          df_svr_owners[counter, 6] <- max(x$Dur_Time) - min(x$Dur_Time)
+          df_svr_owners[counter, 7] <- round(sd(x$Dur_Time), digits=1)
+          df_svr_owners[counter, 8] <- staff_names[i,1]
+          counter <- counter + 1
+     }
+     else {
+          df_svr_owners[counter, 1] <- i
+          df_svr_owners[counter, 2] <- 0
+          df_svr_owners[counter, 3] <- 0
+          df_svr_owners[counter, 4] <- 0
+          df_svr_owners[counter, 5] <- 0
+          df_svr_owners[counter, 6] <- 0
+          df_svr_owners[counter, 7] <- 0
+          df_svr_owners[counter, 8] <- staff_names[i,1]
+          counter <- counter + 1
+          return
+     }
+}
+
+df_svr_owners_desc <- df_svr_owners[order(df_svr_owners$Events, decreasing=TRUE),]
+ggplot(data=df_svr_owners, aes(x=Owner, y=Events)) +
+     geom_bar(fill = "steelblue", stat="identity") +
+     geom_text(aes(Owner, Events, label = Events), 
+               vjust = -0.5, color = "black", size = 3.5) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     labs(title="Service Requests - Events by Owner",
+          x="Owner Name", y = "Service Requests")
+```
+
+When we look at average duration, we see more of a two-tier structure. One group tends to get tickets resolved in 5-10 days (within SLA limits), and a second group (two members) does not. 
+
+```{r Plot - SR Owners Volume of Tickets, echo=FALSE, warning=FALSE}
+ggplot(data=df_svr_owners, aes(x=Owner, y=AvgDur)) +
+     geom_bar(fill = "steelblue", stat="identity") + 
+     geom_text(aes(Owner, AvgDur, label = AvgDur), 
+               vjust = -0.5, color = "black", size = 3.5) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     labs(title="Service Requests - Average Duration by Owner",
+          x="Owner Name", y = "Average Duration")
+```
+
+In terms of standard deviation - a kind of speed metric (how long does it take me to do *all* my work?), we see five staffers who can get 95% percent of their tickets done within the SLA target (that is, they have a standard deviation of 5 or less). The others would complete at least 68% of their tickets within the SLA target, but no one is performing at a level where all of their work would be within the SLA range. 
+
+```{r Plot - SR Owners vs. SD, echo=FALSE, warning=FALSE}
+ggplot(df_svr_owners, aes(x=Owner, y=SD)) +
+     geom_bar(fill = "steelblue", stat="identity") +
+     geom_text(aes(Owner, SD, label = SD), 
+               vjust = -0.5, color = "black", size = 3.5) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     labs(title="Service Requests - Standard Deviations by Owner",
+          x="Owner Name", y = "Standard Deviation")
+```
+
+So who is the best performer overall? Of course, it depends on what you are measuring. For example, if we chose 3 metrics defiined this way:
+     
+* Volume: the overall number of incidents handled
+* Efficiency: how quickly an incident was handled (on average)
+* Speed: the number of days it takes to handle a set of requests
+
+We might see a ranking like this, giving a 1 for every first place, a 2 for every second place, and so on:
+
+```{r Table - Staff Rankings, echo=FALSE, warning=FALSE}
+staff_rankings
+```
+
+Any such ranking has to be devised by management - to choose those criteria that are the most important. The above is only for illustrative purposes, but it may prove to be directionally useful.
+
+\newpage
+
+# Building a Predictive Model
+
+It is clear from the analysis so far that there is room for improvement in the performance of the service desk staff. The average durations are over the SLA target for incidents and, while under the SLA for service requests - are not particularly encouraging given the number that are over that target.
+
+We also learned that just using simple averages would give us a basic predictive model should the service desk wish to provide clients with a estimate to set expectations. Given the wide range of standard deviations, however, this estimate could be misleading if not tied to a specific staff member.
+
+The simplest of all models would be to just take one grand average, but we have already seen that we can do better than that. The question is whether or not we can do significantly better than that.
+
+At the outset, we have to keep in mid that predictive models seek to weed out the noise in a data set - outliers and oddballs of various kinds. By limiting the duration ceiling to 30 days, *we have effectively removed much of this noise already*. Therefore we look at model building as a means to verify that this step was a good one, rather than as a means to dramatically improve our ability to estimate durations.
+
+The removal of events with a duration greater than 30 days has improved our estimates by shortening the range of durations and thereby lowering the average. Therefore we expect that a technique such as regularization will not help much. However, we may see some benefit from accounting for category- or owner-specific effects. 
+
+This section has two parts. In part one, we make the most use we can of averages by category and owner to provide service desk staff with a reasonable estimate of duration times for a given type of problem handled by a given person. In part two, we see if we can improve on those averages.
+
+## Using Averages to Set Expectations
+
+When responding initially to the call, the initial response could be simple: just say "6-7 days on average" as the current average duration for all events - incidents or service requests - are so close (about 7 days if we round the number). 
+
+Going one step further, we could just give the average duration for given category. Or, if we know if it is an incident vs. a service request, give the average for that category of that event type. We can go one step further than that, and map a given service desk staff member to a given category and quote the average duration for that person working on that kind of problem. That is about as far as we can go at this point - or at least, until we have better data to work with. 
+
+If a category is not listed, the estimate is zero, as that category has historically been addressed immediately (zero days average duration). A crude model to be sure, but it has two advantages: first, it is simple and practical. Second, it provides a starting point for individuals to up their game and see how far they can drive down the duration times (min, average, and max) for a given category.
+
+Below is such a table mapping problem categories against the staff who have worked on them. 
+
+```{r Duration Prediction Times (Averages), warning=FALSE, include=FALSE}
+cat_inc_pred <- newmat_inc %>%
+     select(L3Name, AvgDur) %>%
+     filter(AvgDur != 0, L3Name != "Bus Apps Placeholder") %>%
+     arrange(L3Name)
+
+cat("Incidents: Predict the following resolution times - or Zero if not listed:")
+knitr::kable(cat_inc_pred)
+
+cat_svr_pred <- newmat_svr %>%
+     select(L3Name, AvgDur) %>%
+     filter(AvgDur != 0, L3Name != "Bus Apps Placeholder") %>%
+     arrange(L3Name)
+
+cat("Incidents: Predict the following resolution times - or Zero if not listed:")
+knitr::kable(cat_svr_pred)
+
+# Collect the data pieces for joining
+df_inc <- dat_inc %>%
+     select(L3C, Owner_ID, Priority, Dur_Time) 
+
+sn_inc <- staff_names %>%
+     select(Owner, Owner_ID)
+
+lc_inc <- Level_codes %>%
+     select(L3C, L3N)
+
+# First join the owners to the base data
+df_inc_1 <- join(df_inc, sn_inc, by = "Owner_ID", type = "inner")
+
+# Now join the names of the categories to the first join
+df_inc_2 <- join(df_inc_1, lc_inc, by = "L3C", type = "left")
+
+# Now we will go through the data, collecting the information to populate the table
+
+# Set up the list of owners to go through
+owners_list <- staff_names %>% filter(SD == "Y")
+x_range_for_plot_max <- nrow(Level_codes)
+
+# define a dataframe to hold the output
+df_coa <- data.frame("Category"    = 1:x_range_for_plot_max,
+                     "Owner"       = 1:x_range_for_plot_max,
+                     "AvgDur"      = 1:x_range_for_plot_max)
+
+# Loop through the data file
+counter <- 1
+for(i in 1:num_L3) {
+     for(j in owners_list$Owner_ID) {
+          x <- df_inc_2 %>% filter(L3C == i & Owner_ID == j)
+          if(nrow(x) != 0) {
+               df_coa[counter, 1] <- Level_codes[i,5]
+               df_coa[counter, 2] <- staff_names[j,1]
+               df_coa[counter, 3] <- round(mean(x$Dur_Time, digits = 2))
+               counter <- counter + 1
+          }
+          else {
+               df_coa[counter, 1] <- 0
+               df_coa[counter, 2] <- Level_codes[j,5]
+               df_coa[counter, 3] <- 0
+          }
+     }
+}
+```
+
+```{r Table - Avg Durations by Owner, echo=FALSE, warning=FALSE}
+df_coa_table <- dcast(df_coa, Category~Owner,value.var = "AvgDur")
+knitr::kable(df_coa_table)
+```
+
+We notice that there are many NAs, indicating that oftimes a given person does not handle a given category / problem type (and vice-versa). Nonetheless, in the absence of better recordkeeping and because some staff tend to handle certain kinds of problems, it is a reasonable-enough mechanism to predict likely resolution times.
+
+## A model to Predict Duration Times More Accurately
+
+In model building, we will focus on incidents for two reasons. First, management has expressed the desire to focus on improving team performance in that area first; second, the tendency for service requests to have no real prioritization (and therefore questionable statistics relative to average durations) makes it problematic to build such a model.
+
+```{r Set up Train and Test Data Sets, warning=FALSE, include=FALSE}
+# Set up the dataset for incidents only
+dat_inc_predict <- dat_inc %>% select(A_ID, L3C, L3N, Dur_Time, Owner_ID, Owned_By)
+
+# Remove lines with less than 2 instances (else the aver)
+cat_index <- as.data.frame(table(dat_inc_predict$L3C)) %>%
+     filter(Freq > 1) %>% select(Var1) 
+
+# Subset the dataframe to include just those rows with multiple values
+inc_predict <- subset(dat_inc_predict, L3C %in% cat_index$Var1)
+
+# Partition the dataset / create the training and test sets
+set.seed(1)
+test_index <- createDataPartition(y = inc_predict$Dur_Time, times = 1, p = 0.2, list = FALSE)
+train_set  <- inc_predict[-test_index,]
+temp       <- inc_predict[test_index,]
+
+# Make sure Owner_ID and L3C in the test_set are also in the train_set
+test_set <- temp %>% 
+     semi_join(train_set, by = "L3C") %>%
+     semi_join(train_set, by = "Owner_ID")
+
+# Add rows removed from test_set back into train_set
+removed <- anti_join(temp, test_set)
+train_set <- rbind(train_set, removed)
+
+# rm(dl, ratings, movies, test_index, temp, movielens, removed)
+
+# Develop the RMSE for model comparisons
+RMSE <- function(act_duration, pred_duration){
+     sqrt(mean((act_duration - pred_duration)^2))
+}
+```
+
+To see if our model is useful, we will first establish a general baseline, and then use the RMSE (residual mean squared error, aka root mean squared error) as a measure of improvement.
+
+RMSE is the standard deviation of the residuals (the prediction errors). Residuals are a measure of how far from the regression line data points are - and how spread out these residuals are. In other words, it tells you how concentrated the data is around the line of best fit. 
+
+We calculate RMSE as the square root of the average of the actual duration minus the predicted duration squared. In R terms, it is:
+
+     sqrt(mean((act_duration - pred_duration)^2))
+
+RMSE is commonly used in forecasting and regression analysis to verify experimental results. In practical terms, it will tell us how far off the mark (the regression line) our data tends to be, and if we can get closer with some adjustments.
+
+To build the model, we divide the data into a training set and a test set. We will develop a model with the training set and then test it on the test set. this is done to avoid overfitting the model (for example, if we used the entire data set to develop the model and never tested it, we would not know if it gave good predictive results or not). In this instance, we will divide the dataset of all incidents randomly - in effect, taking a statistically useful sample to create the test set. The training set will have 80% of the incidents, the test set 20%. 
+
+### Step 1: Establish a Baseline - the Average Duration for All Incidents
+
+The simple average for all events is one place - and the easiest place - to start. It provides a benchmark for improvement. As noted elsewhere, the mere act of limiting duration times to 30 days *will significantly improve average duration times* and therefore the average will be better than would ordinarily be the case. When looking at the average and running it through our RMSE formula, we get our benchmark RMSE to see if we can do better.
+
+```{r Set Average and RMSE Function, echo=FALSE, warning=FALSE}
+mu <- mean(train_set$Dur_Time)
+avg_rmse <- RMSE(train_set$Dur_Time, mu)
+
+# set up a dataframe to hold the results of this average and further RMSEs
+rmse_results <- data_frame(method = "Simple Average (Mean) Duration", RMSE = avg_rmse)
+
+# Display the initial result
+knitr::kable(rmse_results)
+```
+
+So at the very least, we have a starting point - and RMSE for the basic, overall average from all incidents in the 30-day cutoff dataset.
+
+### Step 2 - Accounting for General Duration Bias
+
+Next we introduce a factor we will call "beta c" or b_c, to account for general bias in category durations. We know that different categories are treated differently - some are more important that other ans presumably get faster attention. The term b_c represents the average duration for a given category c. The code looks like this:
+
+```{r Calculating b_c, echo=TRUE, warning=FALSE}
+# Calculate b_c as the average of a given category's duration minus the overall average 
+mu <- mean(train_set$Dur_Time)
+
+# Set up dataframe to capture the results
+category_avgs <- data.frame("L3C" = 1:num_L3,
+                            "b_c" = 1:num_L3)
+
+counter <- 1
+for(i in 1:num_L3) {
+     x <- train_set %>% filter(L3C == i)
+     if(nrow(x) != 0) {
+          category_avgs[counter,1] <- i
+          category_avgs[counter,2] <- mean(x$Dur_Time - mu)
+          counter <- counter + 1
+     }
+     else {
+          category_avgs[counter,1] <- i
+          category_avgs[counter,2] <- 0
+          counter <- counter + 1
+     }
+}
+```
+
+The result is a list with 89 rows, one for each category, and the output looks like this:
+
+```{r Show b_c Output (head only), echo=FALSE, warning=FALSE}
+head(category_avgs)
+```
+
+We then join this list to our test set and calculate the new RMSE and see if it is better than our simple average. We use this code:
+
+```{r Calculate Effect of b_c (RMSE), echo=TRUE, warning=FALSE}
+# Generate predicted durations returned by the model
+predicted_durations <- mu + test_set %>% 
+     left_join(category_avgs, by = 'L3C') %>%
+     pull(b_c)
+
+# Calculate the RMSE
+model_1_rmse <- RMSE(predicted_durations, test_set$Dur_Time)
+
+# Add the results to the rmse_results summary
+rmse_results <- bind_rows(rmse_results,
+                          data_frame(method="Category Effects Model",  
+                                     RMSE = model_1_rmse))
+
+# Display the result
+knitr::kable(rmse_results)
+```
+
+We see that the new RMSE value is not lower - the simple average is still better (lower RMSE value). Apparently there are no factors causing a given category type to be significantly more complext or difficult that would cause extraordinarily long duration times.
+
+### Step 3 - Accounting for Who Works the Problem
+
+Next, we will introduce a term we will call "beta o" or b_o, to account for owner-specific effects when handling categories of various kinds. As noted above, this is used to see if there are significantly different factors at work that would cause one person to consistently have *much* better durations than another. As we did with the category effects model, we calculate the b_o value for each of the staff members, join this to the category effects values which have already been joined to the test data. The code to do the calculation looks like this:
+
+```{r Calculate b_o, echo=FALSE, warning=FALSE}
+# Calculate b_o as the average of a given owner's time minus the overall average 
+# minus the general category bias
+mu <- mean(train_set$Dur_Time)
+
+owner_avgs <- train_set %>% 
+     left_join(category_avgs, by = 'L3C') %>%
+     select(L3C, L3N, Dur_Time, Owner_ID, b_c)
+
+# Set up dataframe to capture the b_o values for each owner
+b_o_values <- data.frame("Owner_ID"  = 1:num_staff,
+                         "b_o_value" = 1:num_staff,
+                         "s"         = 1:num_staff,
+                         "dur_sum"   = 1:num_staff,
+                         "n_u"       = 1:num_staff)
+
+# Loop through and calculate the b_o for each owner
+counter <- 1
+for(i in 1:num_staff) {
+     x <- owner_avgs %>% filter(Owner_ID == i)
+     if(nrow(x) != 0) {
+          b_o_values[counter,1] <- i
+          b_o_values[counter,2] <- mean(x$Dur_Time - mu - x$b_c)
+          b_o_values[counter,3] <- sum(x$Dur_Time - mu)
+          b_o_values[counter,4] <- sum(x$Dur_Time)
+          b_o_values[counter,5] <- nrow(x)
+          counter <- counter + 1
+     }
+     else {
+          b_o_values[counter,1] <- i
+          b_o_values[counter,2] <- 0
+          b_o_values[counter,3] <- 0
+          b_o_values[counter,4] <- 0
+          b_o_values[counter,5] <- 0
+          counter <- counter + 1
+     }
+}
+b_o_values <- b_o_values %>% filter(b_o_value != 0)
+```
+
+```{r Calculate b_o Prediction, echo=TRUE, warning=FALSE}
+# Generate predicted durations returned by the model
+predicted_durations <- test_set %>% 
+     left_join(category_avgs, by = 'L3C') %>%
+     left_join(b_o_values, by = 'Owner_ID') %>%
+     mutate(pred = mu + b_c + b_o_value) %>%
+     pull(pred)
+```
+
+...and the resulting RMSE is shown below:
+
+```{r Calculate Effect of b_o (RMSE), echo=FALSE, warning=FALSE}
+# Calculate the RMSE
+model_2_rmse <- RMSE(predicted_durations, test_set$Dur_Time)
+
+# Add the results to the rmse_results summary
+rmse_results <- bind_rows(rmse_results,
+                          data_frame(method="Owner Effects Model",  
+                                     RMSE = model_2_rmse))
+
+# Display the updated result
+knitr::kable(rmse_results)
+```
+
+We see that there is the slightest of improvements - certainly not enough to be significant and definitely not better than the average we have been using. This supports the theory that applying the 30-day cutoff for durations may have already removed most (or all) of whatever owner effects there might have been.
+
+### Step 4: Regularization
+
+We will now see if regularization can improve the model. Given what we have seen above, we do not expect it to. Regularization is used to remove the effects of say, a person joining the service desk for a week, handling a number of requests in record time, and then disappearing. Like a batter who hits .427 in the first two weeks of the season, it is not indicative of what the whole season would be like. Regularization compensates for this by applying a penalty for durations that are either way too high or way too low. It is likely, however, that the 30-day cutoff will already have cured this problem as well - or some of it.
+
+The process is to establish a value - call it lambda - experimentally and then apply it to the test set that has been joined together with the duration time factors for a given category. We will arrive at the optimal lambda value somewhere between 100 and 150:
+
+```{r Select lambda and Apply for new RMSE, echo=FALSE, warning=FALSE}
+# Again, establish the average duration for all incidents
+mu <- mean(train_set$Dur_Time)
+
+# Take the sum of each of the movie ratings minus the average rating
+# and calculate the number of ratings for that movie
+
+sum_category_dur_time <- data.frame("L3C"  = 1:num_L3,
+                                    "scdt" = 1:num_L3,
+                                    "n_c"  = 1:num_L3,
+                                    "n_cv" = 1:num_L3)
+
+counter <- 1
+for(i in 1:num_L3) {
+     x <- train_set %>% filter(L3C == i)
+     if(nrow(x) != 0) {
+          sum_category_dur_time[counter,1] <- i
+          sum_category_dur_time[counter,2] <- sum(x$Dur_Time - mu) 
+          sum_category_dur_time[counter,3] <- nrow(x)
+          sum_category_dur_time[counter,4] <- sum(x$Dur_Time - mu)/(nrow(x))
+          counter <- counter + 1
+     }
+     else {
+          counter <- counter + 1
+     }
+}
+
+# Select a Lambda 
+lambdas <- seq(100, 150, 1)
+
+# Join to the training set, calc new b_c and prediction
+rmses <- sapply(lambdas, function(l){
+     predicted_durations <- test_set %>% 
+          left_join(sum_category_dur_time, by = 'L3C') %>% 
+          mutate(b_c = scdt / (n_c + l)) %>%
+          mutate(pred = mu + b_c) %>%
+          pull(pred)
+     return(RMSE(predicted_durations, test_set$Dur_Time))
+})
+
+# Plot lambdas and disply lambda with lowest value
+qplot(lambdas, rmses)  
+paste("Optimal lambda value:",lambdas[which.min(rmses)])
+
+# Use optimal lambda to calculate the new b_c
+lambda <- lambdas[which.min(rmses)]
+
+mu <- mean(train_set$Dur_Time)
+
+category_reg_avgs <- data.frame("L3C"  = 1:num_L3,
+                                "b_c"  = 1:num_L3,
+                                "lcra" = 1:num_L3)
+
+counter <- 1
+for(i in 1:num_L3) {
+     x <- train_set %>% filter(L3C == i)
+     category_reg_avgs[counter,1] <- i
+     category_reg_avgs[counter,2] <- sum(x$Dur_Time - mu) / (nrow(x) + lambda) 
+     category_reg_avgs[counter,3] <- nrow(x)
+     counter <- counter + 1
+}
+
+# The result is a dataframe with 89 rows, one for each category
+# category_reg_avgs
+
+# Generate new prediction
+predicted_durations <- test_set %>% 
+     left_join(category_reg_avgs, by = "L3C") %>%
+     mutate(pred = mu + b_c) %>%
+     pull(pred)
+
+# Calculate RMSE
+model_3_rmse <- RMSE(predicted_durations, test_set$Dur_Time)
+
+# Update RMSE results
+rmse_results <- bind_rows(rmse_results,
+                          data_frame(method = "Regularized Category Effects Model",  
+                                     RMSE = model_3_rmse))
+
+# Display updated results
+knitr::kable(rmse_results)
+```
+
+We see that the regularized model does a little better than either of the two above, but still does not beat the simple average. In the end, our 30-day cutoff had the most leverage in improving average duration times - it effectively blunt-forced a user effects model and regularization. They key management takeaway is *get rid of the outliers - anything above 30 days*.
+
+# Conclusions 
+
+* One of the original goals of this analysis was to discover if there was a means to do breach forecasting (determine if a given ticket would exceed the SLA targets). Given that 1439 of the 1451 incidents (99.2%) exceeded SLA targets, it is actually safe to assume that *EVERY* ticket will cause a breach. The problem is not with forecasting, it is with getting duration times down. It is not nearly so bad with service requests, with only 780 of 5209 (15%) exceeding the SLA. Of course, both of these figures assume a 30-day cutoff on durations.
+
+* The number of very high duration tickets is troublesome. If it is bad recordkeeping, that can be fixed. If we are mis-classifying tickets (for example, using them from everything from major projects to a note to call someone back), then they should not be entered into Cherwell. For example, updating 450 desktops to a new virus software package is *not* a ticket, it is a project. We would expect projects to take weeks or months to finish.
+
+* The service desk staff are likely unaware of their performance, or we would not see so many very high durations with no reasonable explanation. There is a lot of data in this report that management can use to convey the key problems of prioritization and recordkeeping consistency. The manager could hold one or more sessions to talk over the findings and create some action steps to resolve.
+
+* On the flip side, the staff may have useful insights as to why some of the odd correlations are occurring (for example, when more events cause maximum duration times to increase but minimum duration times to decrease). One suspects there will be some useful information gained from that discussion.
+
+\newpage
+
+# Recommendations
+
+* One piece of feedback TSG has received from the organization is that they need to be faster in responding to problems and requests. The analysis has uncovered a number of opportunities (all relatively straightforward and easy) to improve duration times and thereby gain a significant jump in speed.
+
+* In this vein, management needs to decide what are the most important metrics; there are many to choose from - for example:
+     + Average duration
+     + Average or maximum duration for priority 1's
+     + Ability to meet SLA targets
+     + Number of tickets addressed in a given timeframe
+     + ...and so forth
+     
+* Once the staff understand the metrics they are going to be measured on, they will respond accordingly - and this implies some management mechanism be in place to show them how they are doing (individually and collectively)
+
+* This analysis will remain somewhat flawed until the service desk team dedicates itself to disciplined recordkeeping. This has the following parts:
+     + Adopting a taxonomy that categorizes problems with greater granularity. This will enable the team to identify what problem areas are requiring the most staff time and effort to resolve. This should be built into Cherwell and be a required entry when a ticket is created.
+     + Adopting a method for assigning priorities. The 5-level prioritization does not seem to be working. Behavior suggests that there should be perhaps no more than 3:
+          - Immediately or same day
+          - Within 2 days (incidents) or 5 days (service requests)
+          - Best effort depending on other priorities and workload
+     + Assuming a reasonable and accurate method of assigning priorities, discipline in addressing them - that is, all Incident 1's are addressed before 2's, and so forth
+     + Providing accurate descriptions of the problem for every ticket. In many instances, the description field has just a few words or something meaningless to anyone who did not enter the ticket.
+     + Closing tickets in Cherwell the day they are completed - no more batching of recordkeeping, as it is not possible to generate accurate statistics when some staff are batching their updates.
+     + Management of the backlog via a daily or weekly aging report so that no high priority ticket gets forgotten, and thereby drives up the average duration times.
+     
+* Based on the aging report, select 1 or 2 tickets per week on which to conduct a post mortem to determine what went right and what went wrong. Make adjustments in communication, the data, or the process accordingly.
+ 
+\newpage
+
+# Next Steps
+
+the next steps, which can be taken immediately, are:
+
+* Create a taxonomy that is optimally useful for managing work and priorities. It does not have to be the one in this analysis, but it needs to be granular enough to track improvements in key problem areas.
+
+* Revise the prioritization scheme so it works and drives faster performance
+
+* Build the revised taxonomy and prioritization scheme into Cherwell, so someone entering a ticket *must* enter that information
+
+* Begin classifying tickets under the new rules immediately. The sooner we can gather a year's worth of data (or even 3 to 6 months worth) the sooner we will know if improved processes and practices are paying off.
+
+* Once we have a critical mass of new data, update the code as needed and re-run everything to see where there have been areas of improvement. Updating code and the attendant tasks should not take more than a few days.
+
+# Appendix - Prototype Aging Report
+
+```{r Display Prototype Aging Report, echo=FALSE}
+# Import and Open the File
+data_filename   <- "Sample Aging Report.csv"
+age_rep         <- read.csv(data_filename, stringsAsFactors = FALSE)
+knitr::kable(age_rep)
+```
+
+[End of Document]

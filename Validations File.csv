@@ -1,0 +1,90 @@
+L1N,L1C,L2N,L2C,L3N,L3C
+Software,1,Business Apps,1,Acrobat Pro,1
+,1,,1,Adobe Air,2
+,1,,1,Adobe Analytics,3
+,1,,1,Adobe CC,4
+,1,,1,Adobe Flash,5
+,1,,1,Adobe Illustrator,6
+,1,,1,Adobe Reader,7
+,1,,1,BetterCloud,8
+,1,,1,Carbonite,9
+,1,,1,Caspio,10
+,1,,1,Ceridian,11
+,1,,1,Cherwell,12
+,1,,1,Concord,13
+,1,,1,Creative Cloud,14
+,1,,1,Cyberduck,15
+,1,,1,Docusign,16
+,1,,1,Dropbox,17
+,1,,1,Enterprise,18
+,1,,1,Go-Global,19
+,1,,1,GoToMeeting,20
+,1,,1,Greenshot,21
+,1,,1,iContact,22
+,1,,1,InCopy,23
+,1,,1,InDesign,24
+,1,,1,Intacct,25
+,1,,1,JSHOL,26
+,1,,1,K4,27
+,1,,1,Kace,28
+,1,,1,Keychain,29
+,1,,1,Lastpass,30
+,1,,1,LibreOffice,31
+,1,,1,Livelink,32
+,1,,1,Marketing Cloud,33
+,1,,1,Merlin,34
+,1,,1,M-Files,35
+,1,,1,Multimedia,36
+,1,,1,Omnifocus,37
+,1,,1,Photoshop,38
+,1,,1,Pulse Secure,39
+,1,,1,Pycharm,40
+,1,,1,Salesforce,41
+,1,,1,SentinelOne,42
+,1,,1,Skype,43
+,1,,1,Slack,44
+,1,,1,Trello,45
+,1,,1,UltiPro,46
+,1,,1,Visio,47
+,1,,1,Zoom,48
+,1,Browsers,2,Chrome,49
+,1,,2,Firefox,50
+,1,,2,IE / Edge,51
+,1,,2,Browsers - Other,52
+,1,Google Apps,3,Docs and Sheets,53
+,1,,3,Calendar,54
+,1,,3,Mail,55
+,1,,3,Groups,56
+,1,,3,Folders,57
+,1,,3,Sites,58
+,1,,3,Chats or Google+,59
+,1,,3,Google Apps - Other,60
+,1,MS-Office,4,MS Excel,61
+,1,,4,MS Access,62
+,1,,4,MS Outlook,63
+,1,,4,MS Publisher,64
+,1,,4,MS Windows,65
+,1,,4,MS Word,66
+,1,,4,MS Powerpoint,67
+,1,,4,MS Office Other,68
+Infrastructure,2,User Platforms,5,Monitors,69
+,2,,5,Computer Accessories,70
+,2,,5,Setup and installs,71
+,2,,5,Updates / Upgrades,72
+,2,,5,Move / Close / Remove,73
+,2,,5,Functional Issues,74
+,2,,5,Infrastructure Placeholder,75
+,2,Printing & Faxing,6,Printing / Scanning,76
+,2,,6,Faxes,77
+,2,Telecomms,7,Network / Connectivity,78
+,2,,7,Phones,79
+,2,,7,Teleconferencing,80
+,2,Security & Access,8,Access or Login,81
+,2,,8,Password,82
+,2,,8,File Access,83
+,2,,8,Breaches and Phishing,84
+,2,,8,Security - Other,85
+,2,,8,Security Placeholder,86
+Other,3,GA and Other,9,Outage or error,87
+,3,,9,Training,88
+,3,,9,GA and Other,89
