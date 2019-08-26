@@ -54,7 +54,7 @@ library(lubridate)
 
 # Import and Open the data file / Establish the data set
 data_filename <- "0_Input_open-incidents.csv"
-dat <- read.csv(data_filename, stringsAsFactors = FALSE)
+dat <- read.csv(file = data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE) 
 
 # Clean up column / vector names
 dat <- rename(dat, replace = c("Incident.ID" = "ID",
@@ -107,6 +107,7 @@ SR_sla_perc  <- round(SR_sla_perc, digits = 2)
 
 ===========================================================================
 
+**Total open tickets: `r nrow(dat)` / Incidents: `r nrow(dat %>% filter(Type == "Inc"))` / SR's: `r nrow(dat %>% filter(Type == "SR"))`**  
 Incidents meeting SLA guidelines: `r inc_sla_perc` %  
 Service Requests meeting SLA guidelines: `r SR_sla_perc` %
 

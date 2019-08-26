@@ -42,10 +42,9 @@ library(lubridate)
 # Download and open survey file
 #
 
-
 # Import and Open the data file / Establish the data set
 data_filename <- "0_Input_open-incidents.csv"
-dat <- read.csv(data_filename, stringsAsFactors = FALSE)
+dat <- read.csv(file = data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE) 
 
 # Clean up column / vector names
 dat <- rename(dat, replace = c("Incident.ID" = "ID",
@@ -95,6 +94,9 @@ SR_sla_perc  <- round(SR_sla_perc, digits = 2)
 # Print out results
 #
 
+cat("Total open tickets:", nrow(dat), "/ Incidents:", 
+    nrow(dat %>% filter(Type == "Inc")), "/ SR's:",
+         nrow(dat %>% filter(Type == "SR")))
 cat("Incidents meeting SLA guidelines:", inc_sla_perc, "%")
 cat("Service Requests meeting SLA guidelines:", SR_sla_perc, "%")
 
@@ -150,6 +152,44 @@ days_07 <- days_07 %>% arrange(desc(Duration))
 days_07
 cat("\n")
 
+#
+# Capture statistics for this week and append to file
+#
+
+Opens         <- nrow(dat)
+Incidents     <- nrow(dat %>% filter(Type == "Inc"))
+Inc_Percent   <- round(((Incidents / Opens) * 100), digits = 1)
+Inc_Mtg_SLA   <- inc_sla_perc
+SRs           <- nrow(dat %>% filter(Type == "SR"))
+SR_Percent    <- round(((SRs / Opens) * 100), digits = 1)
+SR_Mtg_SLA    <- SR_sla_perc
+Days_07       <- nrow(days_07)
+Days_30       <- nrow(days_30)
+Days_60       <- nrow(days_60)
+Over_60       <- nrow(over_60)
+
+# Establish the week ending date for these particular statistics
+Week_Ending <- readline("What is the week ending date for this report [yyyy-mm-dd]? ")
+
+# Create dataframe to hold the results
+week_ending_data <- data.frame(Week_Ending,
+                               Opens,
+                               Incidents,
+                               Inc_Percent,
+                               Inc_Mtg_SLA,
+                               SRs,
+                               SR_Percent,
+                               SR_Mtg_SLA,
+                               Days_07,
+                               Days_30,
+                               Days_60,
+                               Over_60)
+
+# Open historical data file and append current week
+data_filename <- "0_Output_cherwell_stats.csv"
+stats <- read.csv(data_filename)
+stats <- rbind(stats, week_ending_data)
+write.csv(stats, file = data_filename)
 
 #--------------------------------------------------------------------
 #
