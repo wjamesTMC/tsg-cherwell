@@ -185,87 +185,103 @@ week_ending_data <- data.frame(Week_Ending,
                                Days_60,
                                Over_60)
 
-# Open historical data file and append current week
-data_filename <- "0_Output_cherwell_stats.csv"
-stats <- read.csv(data_filename)
-stats <- rbind(stats, week_ending_data)
-write.csv(stats, file = data_filename)
+# Open historical data file and append current week's data
+write.table(week_ending_data, file = "0_Output_cherwell_stats.csv", append = TRUE, sep = ",", col.names = FALSE)
 
 #--------------------------------------------------------------------
 #
-# Build graphics from summary dataframe
+# Build graphics from historical data
 #
 #--------------------------------------------------------------------
 
-# Number of coments and responses by survey
-num_c_and_r <- ggplot() +
-  geom_line(data=survey_inf, aes(x=Survey, y=num_resps, color = "Responses"), group=1, size=2) +
-  geom_line(data=survey_inf, aes(x=Survey, y=num_comments, color = "Comments"), group=1, size=2) +
-  scale_colour_manual("", 
-                      breaks = c("Responses", "Comments"),
-                      values = c("mediumblue", "indianred4")) +
-  labs(title = "Count of Comments and Responses", subtitle = "Numbers of each by Survey") + ylab("Number") +
-  theme(legend.position = c(0.18,0.85))
+# Open File
+data_filename <- "CopyOf0_Output_cherwell_stats.csv"
+dat <- read.csv(file = data_filename, header = TRUE, stringsAsFactors = FALSE)
+dat <- dat %>% arrange(Week_Ending)
+
+# Number of Opens by Week
+Opens_by_Week <- ggplot() +
+   geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Opens, color = "Opens", group = 1)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+   labs(title = "Number of Opens", subtitle = "By Week") + xlab("Week") + ylab("Number")
+     
+# Number of incidents meeting SLAs
+inc_mtg_slas <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Inc_Mtg_SLA, color = "SLA %", group = 1)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Percent of Incidents Meeting SLA Target", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Number of service requests meeting SLAs
+sr_mtg_slas <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$SR_Mtg_SLA, color = "SLA %", group = 1)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Percent of Service Requests Meeting SLA Target", subtitle = "By Week") + xlab("Week") + ylab("Number")
 
 # Ratio of comments to responses
-ratio_c_to_r <- ggplot() +
-  geom_line(data=survey_inf, aes(x=Survey, y=c_to_r_ratio, color = "Ratios", group=1), size=2) +
-  scale_colour_manual("", breaks = c("Ratios"), values = c("mediumblue")) +
-  labs(title = "Ratio of Comments to Responses", subtitle = "Ratio By Survey") + ylab("Proportion of Comments") +
-  theme(legend.position = c(0.15,0.88))
-
-# Arrange the two plots for pasting into deck
-grid.arrange(num_c_and_r, ratio_c_to_r, ncol = 2)
-
-# Positive words vs. comments
-pw_vs_c <- ggplot() +
-  geom_line(data=survey_inf, aes(x=Survey, y=num_pos_words, color = "Positive Words", group=1), size=2) +
-  geom_line(data=survey_inf, aes(x=Survey, y=num_comments, color = "Comments", group=1), size=2) +
-  scale_y_continuous(limits=c(0, 60)) +
-  scale_colour_manual("", 
-                      breaks = c("Positive Words", "Comments"),
-                      values = c("mediumblue", "indianred4")) +
-  labs(title = "Positive Words vs. Comments", subtitle = "Number of each by Survey") + ylab("Number of Each") +
-  theme(legend.position = c(0.2,0.85))
-
-# Negative words vs. comments
-nw_vs_c <- ggplot() +
-  geom_line(data=survey_inf, aes(x=Survey, y=num_neg_words, color = "Negative Words", group=1), size=2) +
-  geom_line(data=survey_inf, aes(x=Survey, y=num_comments, color = "Comments", group=1), size=2) +
-  scale_y_continuous(limits=c(0, 60)) +
-  scale_colour_manual("", 
-                      breaks = c("Negative Words", "Comments"),
-                      values = c("mediumblue", "indianred4")) +
-  labs(title = "Negative Words vs. Comments", subtitle = "Number of each by Survey") + ylab("Number of Each") +
-  theme(legend.position = c(0.22,0.85))
-
-# Neutral words vs. comments
-neu_vs_c <- ggplot() +
-  geom_line(data=survey_inf, aes(x=Survey, y=num_neu_words, color = "Neutral Words", group=1), size=2) +
-  geom_line(data=survey_inf, aes(x=Survey, y=num_comments, color = "Comments", group=1), size=2) +
-  scale_y_continuous(limits=c(0, 60)) +
-  scale_colour_manual("", 
-                      breaks = c("Neutral Words", "Comments"),
-                      values = c("mediumblue", "indianred4")) +
-  labs(title = "Neutral Words vs. Comments", subtitle = "Number of each by Survey") + ylab("Number of Each") +
-  theme(legend.position = c(0.22,0.85))
-
-# Arrange the two plots for pasting into deck
-grid.arrange(pw_vs_c, nw_vs_c, neu_vs_c, ncol = 3)
-
-# Positive and negative words to comments ratios
-p_vs_n <- ggplot() +
-  geom_line(data=survey_inf, aes(x=Survey, y=pw_to_c_ratio, color = "Positive", group=1), size=2) +
-  geom_line(data=survey_inf, aes(x=Survey, y=nw_to_c_ratio, color = "Negative", group=1), size=2) +
-  geom_line(data=survey_inf, aes(x=Survey, y=neu_to_c_ratio, color = "Neutral", group=1), size=2) +
-  scale_colour_manual("", 
-                      breaks = c("Positive Words", "Negative Words", "Neutral Words"),
-                      values = c("indianred4", "gray40", "green4")) +
-  labs(title = "Ratios of Positive Negative & Neutral Words to Comments", subtitle = "Ratio Comparisons by Survey") +
-  ylab("# Words / # Comments") 
-
-# Arrange the two plots for pasting into deck
-grid.arrange(p_vs_n, ncol = 2)
+# ratio_c_to_r <- ggplot() +
+#   geom_line(data=survey_inf, aes(x=Survey, y=c_to_r_ratio, color = "Ratios", group=1), size=2) +
+#   scale_colour_manual("", breaks = c("Ratios"), values = c("mediumblue")) +
+#   labs(title = "Ratio of Comments to Responses", subtitle = "Ratio By Survey") + ylab("Proportion of Comments") +
+#   theme(legend.position = c(0.15,0.88))
+# )
+# # Arrange the two plots for pasting into deck
+# grid.arrange(num_c_and_r, ratio_c_to_r, ncol = 2)
+# 
+# # Positive words vs. comments
+# pw_vs_c <- ggplot() +
+#   geom_line(data=survey_inf, aes(x=Survey, y=num_pos_words, color = "Positive Words", group=1), size=2) +
+#   geom_line(data=survey_inf, aes(x=Survey, y=num_comments, color = "Comments", group=1), size=2) +
+#   scale_y_continuous(limits=c(0, 60)) +
+#   scale_colour_manual("", 
+#                       breaks = c("Positive Words", "Comments"),
+#                       values = c("mediumblue", "indianred4")) +
+#   labs(title = "Positive Words vs. Comments", subtitle = "Number of each by Survey") + ylab("Number of Each") +
+#   theme(legend.position = c(0.2,0.85))
+# 
+# # Negative words vs. comments
+# nw_vs_c <- ggplot() +
+#   geom_line(data=survey_inf, aes(x=Survey, y=num_neg_words, color = "Negative Words", group=1), size=2) +
+#   geom_line(data=survey_inf, aes(x=Survey, y=num_comments, color = "Comments", group=1), size=2) +
+#   scale_y_continuous(limits=c(0, 60)) +
+#   scale_colour_manual("", 
+#                       breaks = c("Negative Words", "Comments"),
+#                       values = c("mediumblue", "indianred4")) +
+#   labs(title = "Negative Words vs. Comments", subtitle = "Number of each by Survey") + ylab("Number of Each") +
+#   theme(legend.position = c(0.22,0.85))
+# 
+# # Neutral words vs. comments
+# neu_vs_c <- ggplot() +
+#   geom_line(data=survey_inf, aes(x=Survey, y=num_neu_words, color = "Neutral Words", group=1), size=2) +
+#   geom_line(data=survey_inf, aes(x=Survey, y=num_comments, color = "Comments", group=1), size=2) +
+#   scale_y_continuous(limits=c(0, 60)) +
+#   scale_colour_manual("", 
+#                       breaks = c("Neutral Words", "Comments"),
+#                       values = c("mediumblue", "indianred4")) +
+#   labs(title = "Neutral Words vs. Comments", subtitle = "Number of each by Survey") + ylab("Number of Each") +
+#   theme(legend.position = c(0.22,0.85))
+# 
+# # Arrange the two plots for pasting into deck
+# grid.arrange(pw_vs_c, nw_vs_c, neu_vs_c, ncol = 3)
+# 
+# # Positive and negative words to comments ratios
+# p_vs_n <- ggplot() +
+#   geom_line(data=survey_inf, aes(x=Survey, y=pw_to_c_ratio, color = "Positive", group=1), size=2) +
+#   geom_line(data=survey_inf, aes(x=Survey, y=nw_to_c_ratio, color = "Negative", group=1), size=2) +
+#   geom_line(data=survey_inf, aes(x=Survey, y=neu_to_c_ratio, color = "Neutral", group=1), size=2) +
+#   scale_colour_manual("", 
+#                       breaks = c("Positive Words", "Negative Words", "Neutral Words"),
+#                       values = c("indianred4", "gray40", "green4")) +
+#   labs(title = "Ratios of Positive Negative & Neutral Words to Comments", subtitle = "Ratio Comparisons by Survey") +
+#   ylab("# Words / # Comments") 
+# 
+# # Arrange the two plots for pasting into deck
+# grid.arrange(p_vs_n, ncol = 2)
 
 
 #--------------------------------------------------------------------
