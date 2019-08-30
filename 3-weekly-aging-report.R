@@ -39,11 +39,11 @@ library(lubridate)
 #--------------------------------------------------------------------
 
 #
-# Download and open survey file
+# Identify and open open tickets file
 #
 
 # Import and Open the data file / Establish the data set
-data_filename <- "0_Input_open-incidents.csv"
+data_filename <- readline("Data file name: ")
 dat <- read.csv(file = data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE) 
 
 # Clean up column / vector names
@@ -128,29 +128,29 @@ cat("\n")
 
 # Part 2 - print out tickets in chronological groupings
 
-cat("===========================================================================")
-cat("Part 2 - Tickets Sorted Chronologically by Age")
-cat("===========================================================================", "\n")
-
-cat("Aged over 60 Days -", nrow(over_60), "tickets", round((nrow(over_60) / nrow(dat) * 100), digits = 3), "% of total")
-over_60 <- over_60 %>% arrange(desc(Duration))
-over_60
-cat("\n")
-
-cat("Aged 30 - 60 Days -", nrow(days_60), "tickets", round((nrow(days_60) / nrow(dat) * 100) , digits = 3), "% of total")
-days_60 <- days_60 %>% arrange(desc(Duration))
-days_60
-cat("\n")
-
-cat("Aged up to 30 Days -", nrow(days_30), "tickets", round((nrow(days_30) / nrow(dat) * 100), digits = 3), "% of total")
-days_30 <- days_30 %>% arrange(desc(Duration))
-days_30
-cat("\n")
-
-cat("Aged 1 Week or less -", nrow(days_07), "tickets", round((nrow(days_07) / nrow(dat) * 100), digits = 3), "% of total")
-days_07 <- days_07 %>% arrange(desc(Duration))
-days_07
-cat("\n")
+# cat("===========================================================================")
+# cat("Part 2 - Tickets Sorted Chronologically by Age")
+# cat("===========================================================================", "\n")
+# 
+# cat("Aged over 60 Days -", nrow(over_60), "tickets", round((nrow(over_60) / nrow(dat) * 100), digits = 3), "% of total")
+# over_60 <- over_60 %>% arrange(desc(Duration))
+# over_60
+# cat("\n")
+# 
+# cat("Aged 30 - 60 Days -", nrow(days_60), "tickets", round((nrow(days_60) / nrow(dat) * 100) , digits = 3), "% of total")
+# days_60 <- days_60 %>% arrange(desc(Duration))
+# days_60
+# cat("\n")
+# 
+# cat("Aged up to 30 Days -", nrow(days_30), "tickets", round((nrow(days_30) / nrow(dat) * 100), digits = 3), "% of total")
+# days_30 <- days_30 %>% arrange(desc(Duration))
+# days_30
+# cat("\n")
+# 
+# cat("Aged 1 Week or less -", nrow(days_07), "tickets", round((nrow(days_07) / nrow(dat) * 100), digits = 3), "% of total")
+# days_07 <- days_07 %>% arrange(desc(Duration))
+# days_07
+# cat("\n")
 
 #
 # Capture statistics for this week and append to file

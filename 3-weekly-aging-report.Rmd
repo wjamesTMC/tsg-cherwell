@@ -40,6 +40,7 @@ library(janitor)
 library(rmarkdown)
 library(kableExtra)
 library(lubridate)
+library(scales)
 
 #--------------------------------------------------------------------
 #
@@ -53,7 +54,7 @@ library(lubridate)
 
 
 # Import and Open the data file / Establish the data set
-data_filename <- "0_Input_open-incidents.csv"
+data_filename <- "0_Input_Open_Tickets_190829.csv"
 dat <- read.csv(file = data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE) 
 
 # Clean up column / vector names
@@ -159,57 +160,109 @@ cat("\n")
 
 `r pagebreak()`
 
-===========================================================================
-
-**Part 2 - Tickets Sorted Chronologically by Age**
-
-===========================================================================
-
-Incidents meeting SLA guidelines: `r inc_sla_perc` %  
-Service Requests meeting SLA guidelines: `r SR_sla_perc` %
-
-===========================================================================  
-Group 1: Aged over 60 Days - `r nrow(over_60)` tickets `r round((nrow(over_60) / nrow(dat) * 100), digits = 2)` % of total  
+=============2=============================================================  
+Part 2: Graphics  
 ===========================================================================  
 
-```{r 2-1 60 Day Summary, echo=FALSE, comment=NA}
-over_60 <- over_60 %>% arrange(desc(Duration))
-knitr::kable(over_60) %>%
-  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
-cat("\n")
+```{r Graphics Section, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+#--------------------------------------------------------------------
+#
+# Build graphics from historical data
+#
+#--------------------------------------------------------------------
+
+# Open File
+data_filename <- "0_Output_cherwell_stats.csv"
+dat <- read.csv(file = data_filename, header = TRUE, stringsAsFactors = FALSE)
+
+# Force the dates to sort (and plot) in ascending order
+dat$Week_Ending <- as.character(dat$Week_Ending)
+dat$Week_Ending <- factor(dat$Week_Ending, levels=unique(dat$Week_Ending))
+
+# Number of Opens by Week
+Opens_by_Week <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Opens, color = "Opens", group = 1), size = 1.5) +
+     theme_economist() +
+     scale_y_continuous(limits=c(0, 500)) +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Number of Opens", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Display plot
+Opens_by_Week
 ```
 
-===========================================================================  
-Group 2: Aged 30 - 60 Days - `r nrow(days_60)` tickets `r round((nrow(days_60) / nrow(dat) * 100), digits = 2)` % of total  
-===========================================================================  
+`r pagebreak()`
 
-```{r 2-2 30 to 60 Summary, echo=FALSE}
-days_60 <- days_60 %>% arrange(desc(Duration))
-knitr::kable(days_60) %>%
-  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
-cat("\n")
+```{r Overall stats graph, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Number of incidents meeting SLAs
+inc_mtg_slas <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Inc_Mtg_SLA, color = "SLA %", group = 1), size = 1.5) +
+     theme_economist() +
+     scale_y_continuous(limits=c(0, 20)) +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "% Incidents Meeting SLA", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Number of service requests meeting SLAs
+sr_mtg_slas <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$SR_Mtg_SLA, color = "SLA %", group = 1), size = 1.5) +
+     theme_economist() +
+     scale_y_continuous(limits=c(0, 20)) +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "% SRs Meeting SLA", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Arrange the plots
+grid.arrange(inc_mtg_slas, sr_mtg_slas, ncol = 2)
 ```
 
-===========================================================================  
-Group 3: Aged up to 30 Days - `r nrow(days_30)` tickets `r round((nrow(days_30) / nrow(dat) * 100), digits = 2)` % of total  
-===========================================================================  
+`r pagebreak()`
 
-```{r 2-3 Up to 30 Days Summary, echo=FALSE}
-days_30 <- days_30 %>% arrange(desc(Duration))
-knitr::kable(days_30) %>%
-  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
-cat("\n")
+```{r Days outputs, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Number of 7 days
+plot_days07 <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Days_07, color = "Days <= 7", group = 1), size = 1.5) +
+     scale_y_continuous(limits=c(0, 150)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Tickets Open 7 Days or Less", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Number of 30 days
+plot_days30 <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Days_30, color = "Days <= 30", group = 1), size = 1.5) +
+     scale_y_continuous(limits=c(0, 150)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Tickets Open 8 to 30 Days", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Arrange the plots
+grid.arrange(plot_days07, plot_days30, ncol = 2)
 ```
 
-===========================================================================  
-Group 4: Aged 1 Week or Less - `r nrow(days_07)` tickets `r round((nrow(days_07) / nrow(dat) * 100), digits = 2)` % of total  
-===========================================================================  
+```{r Remaining days plots, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Number up to 60 days
+plot_days60 <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Days_60, color = "Days <= 60", group = 1), size = 1.5) +
+     scale_y_continuous(limits=c(0, 150)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Tickets Open 31 to 60 Days", subtitle = "By Week") + xlab("Week") + ylab("Number")
 
-```{r 2-4 Summary up to 7 days, echo=FALSE}
-days_07 <- days_07 %>% arrange(desc(Duration))
-knitr::kable(days_07) %>%
-  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
-cat("\n")
+# Number over 60
+plot_over60 <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Over_60, color = "Days over 60", group = 1), size = 1.5) +
+     scale_y_continuous(limits=c(0, 150)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Tickets Open Over 60 Days", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Arrange the plots
+grid.arrange(plot_days60, plot_over60, ncol = 2)
 ```
 
 **End of Report**
