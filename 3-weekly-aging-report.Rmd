@@ -54,7 +54,7 @@ library(scales)
 
 
 # Import and Open the data file / Establish the data set
-data_filename <- "0_Input_Open_Tickets_190829.csv"
+data_filename <- "0_Input_Open_Tickets_190905.csv"
 dat <- read.csv(file = data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE) 
 
 # Clean up column / vector names

@@ -42,8 +42,12 @@ library(lubridate)
 # Identify and open open tickets file
 #
 
+# Establish the week ending date for these particular statistics
+Week_Ending <- readline("What is the week ending date for this report yymmdd]? ")
+
 # Import and Open the data file / Establish the data set
-data_filename <- readline("Data file name: ")
+data_filename <- paste("0_Input_Open_Tickets_", Week_Ending, ".csv")
+data_filename <- stri_replace_all_fixed(data_filename, " ", "")
 dat <- read.csv(file = data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE) 
 
 # Clean up column / vector names
@@ -167,9 +171,6 @@ Days_07       <- nrow(days_07)
 Days_30       <- nrow(days_30)
 Days_60       <- nrow(days_60)
 Over_60       <- nrow(over_60)
-
-# Establish the week ending date for these particular statistics
-Week_Ending <- readline("What is the week ending date for this report [yyyy-mm-dd]? ")
 
 # Create dataframe to hold the results
 week_ending_data <- data.frame(Week_Ending,
