@@ -31,6 +31,7 @@ library(janitor)
 library(rmarkdown)
 library(kableExtra)
 library(lubridate)
+library(stringr)
 
 #--------------------------------------------------------------------
 #

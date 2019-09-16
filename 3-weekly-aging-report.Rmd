@@ -54,7 +54,7 @@ library(scales)
 
 
 # Import and Open the data file / Establish the data set
-data_filename <- "0_Input_Open_Tickets_190905.csv"
+data_filename <- "0_Input_Open_Tickets_190913.csv"
 dat <- read.csv(file = data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE) 
 
 # Clean up column / vector names
@@ -199,7 +199,7 @@ Opens_by_Week
 inc_mtg_slas <- ggplot() +
      geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Inc_Mtg_SLA, color = "SLA %", group = 1), size = 1.5) +
      theme_economist() +
-     scale_y_continuous(limits=c(0, 20)) +
+     scale_y_continuous(limits=c(0, 50)) +
      theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
      theme(legend.title = element_blank()) +
      labs(title = "% Incidents Meeting SLA", subtitle = "By Week") + xlab("Week") + ylab("Number")
@@ -208,7 +208,7 @@ inc_mtg_slas <- ggplot() +
 sr_mtg_slas <- ggplot() +
      geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$SR_Mtg_SLA, color = "SLA %", group = 1), size = 1.5) +
      theme_economist() +
-     scale_y_continuous(limits=c(0, 20)) +
+     scale_y_continuous(limits=c(0, 50)) +
      theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
      theme(legend.title = element_blank()) +
      labs(title = "% SRs Meeting SLA", subtitle = "By Week") + xlab("Week") + ylab("Number")
