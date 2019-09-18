@@ -32,7 +32,6 @@ library(rmarkdown)
 library(kableExtra)
 library(lubridate)
 library(stringr)
-library(googlesheets)
 
 #--------------------------------------------------------------------
 #
@@ -41,21 +40,25 @@ library(googlesheets)
 #--------------------------------------------------------------------
 
 #
-# Open the Google Sheet
+# Identify and open open tickets file
 #
 
-data_filename <- gs_title("CAR-input-19-09-20")
-dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE) 
-Week_Ending <- str_sub(data_filename[2], 11, 18)
+# Establish the week ending date for these particular statistics
+Week_Ending <- readline("What is the week ending date for this report yymmdd]? ")
+
+# Import and Open the data file / Establish the data set
+data_filename <- paste("0_Input_Open_Tickets_", Week_Ending, ".csv")
+data_filename <- stri_replace_all_fixed(data_filename, " ", "")
+dat <- read.csv(file = data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE) 
 
 # Clean up column / vector names
-dat <- rename(dat, replace = c("Incident ID" = "ID",
-                               "Created Date Time" = "Created",
-                               "Customer Display Name" = "Customer",
-                               "Incident Type" = "Type",
-                               "Short Description" = "Desc",
-                               "Owned By" = "Owner",
-                               "SLA Resolve By Deadline" = "Due"))
+dat <- rename(dat, replace = c("Incident.ID" = "ID",
+                               "Created.Date.Time" = "Created",
+                               "Customer.Display.Name" = "Customer",
+                               "Incident.Type" = "Type",
+                               "Short.Description" = "Desc",
+                               "Owned.By" = "Owner",
+                               "SLA.Resolve.By.Deadline" = "Due"))
 
 # Get rid of unneeded column and row information and sort by created date
 dat <- dat %>% select(ID, Created, Customer, Type, Desc, Owner, Due)
@@ -128,6 +131,32 @@ days_07 <- days_07 %>% arrange(Owner, desc(Duration))
 days_07
 cat("\n")
 
+# Part 2 - print out tickets in chronological groupings
+
+# cat("===========================================================================")
+# cat("Part 2 - Tickets Sorted Chronologically by Age")
+# cat("===========================================================================", "\n")
+# 
+# cat("Aged over 60 Days -", nrow(over_60), "tickets", round((nrow(over_60) / nrow(dat) * 100), digits = 3), "% of total")
+# over_60 <- over_60 %>% arrange(desc(Duration))
+# over_60
+# cat("\n")
+# 
+# cat("Aged 30 - 60 Days -", nrow(days_60), "tickets", round((nrow(days_60) / nrow(dat) * 100) , digits = 3), "% of total")
+# days_60 <- days_60 %>% arrange(desc(Duration))
+# days_60
+# cat("\n")
+# 
+# cat("Aged up to 30 Days -", nrow(days_30), "tickets", round((nrow(days_30) / nrow(dat) * 100), digits = 3), "% of total")
+# days_30 <- days_30 %>% arrange(desc(Duration))
+# days_30
+# cat("\n")
+# 
+# cat("Aged 1 Week or less -", nrow(days_07), "tickets", round((nrow(days_07) / nrow(dat) * 100), digits = 3), "% of total")
+# days_07 <- days_07 %>% arrange(desc(Duration))
+# days_07
+# cat("\n")
+
 #
 # Capture statistics for this week and append to file
 #
@@ -159,8 +188,8 @@ week_ending_data <- data.frame(Week_Ending,
                                Over_60)
 
 # Open historical data file and append current week's data
-output_file <- gs_title("CAR-Output-cherwell-stats")
-gs_add_row(output_file, ws = 1, input = week_ending_data, verbose = TRUE)
+write.table(week_ending_data, file = "0_Output_cherwell_stats.csv", append = TRUE, sep = ",", col.names = FALSE)
+
 
 #--------------------------------------------------------------------
 #
