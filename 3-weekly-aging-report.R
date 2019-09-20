@@ -21,9 +21,7 @@ library(ggplot2)
 library(ggthemes)
 library(extrafont)
 library(scales)
-library(reshape2)
 library(stringi)
-library(expss)
 library(grid)
 library(gridExtra)
 library(lattice)
@@ -44,8 +42,11 @@ library(googlesheets)
 # Open the Google Sheet
 #
 
+# Open the data file - a Google Sheet in user's top level directory
 data_filename <- gs_title("CAR-input-19-09-20")
-dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE) 
+dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE)
+
+# Generate the week ending data from the data file name
 Week_Ending <- str_sub(data_filename[2], 11, 18)
 
 # Clean up column / vector names
@@ -159,7 +160,7 @@ week_ending_data <- data.frame(Week_Ending,
                                Over_60)
 
 # Open historical data file and append current week's data
-output_file <- gs_title("CAR-Output-cherwell-stats")
+output_file <- gs_title("CAR-output-cherwell-stats")
 gs_add_row(output_file, ws = 1, input = week_ending_data, verbose = TRUE)
 
 #--------------------------------------------------------------------
