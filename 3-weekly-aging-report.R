@@ -43,11 +43,11 @@ library(googlesheets)
 #
 
 # Open the data file - a Google Sheet in user's top level directory
-data_filename <- gs_title("CAR-input-19-09-20")
+data_filename <- gs_title("CAR-input-2019-09-20")
 dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE)
 
 # Generate the week ending data from the data file name
-Week_Ending <- str_sub(data_filename[2], 11, 18)
+Week_Ending <- str_sub(data_filename[2], 11, 20)
 
 # Clean up column / vector names
 dat <- rename(dat, replace = c("Incident ID" = "ID",
@@ -74,7 +74,7 @@ dat$Due <- sub(' .*', '', dat$Due)
 dat$Due <- as.Date(dat$Due, format = "%m/%d/%Y")
 
 # Add column for days open (Duration)
-dat <- dat %>% mutate(Duration = difftime(Sys.Date(), dat$Created, units = "days"))
+dat <- dat %>% mutate(Duration = difftime(as.Date(Week_Ending), dat$Created, units = "days"))
 dat <- dat %>% arrange(desc(Duration))
 
 # Establish groupings for the open tickets
