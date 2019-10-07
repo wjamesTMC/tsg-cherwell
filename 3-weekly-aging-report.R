@@ -43,7 +43,7 @@ library(googlesheets)
 #
 
 # Open the data file - a Google Sheet in user's top level directory
-data_filename <- gs_title("CAR-input-2019-09-20")
+data_filename <- gs_title("CAR-input-2019-10-04")
 dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE)
 
 # Generate the week ending data from the data file name
