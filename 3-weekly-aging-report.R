@@ -43,7 +43,7 @@ library(googlesheets)
 #
 
 # Open the data file - a Google Sheet in user's top level directory
-data_filename <- gs_title("CAR-input-2019-10-04")
+data_filename <- gs_title("CAR-input-2019-10-11")
 dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE)
 
 # Generate the week ending data from the data file name
@@ -103,10 +103,21 @@ cat("Total open tickets:", nrow(dat), "/ Incidents:",
 cat("Incidents meeting SLA guidelines:", inc_sla_perc, "%")
 cat("Service Requests meeting SLA guidelines:", SR_sla_perc, "%")
 
-# Part 1 - print out chronological groupings sorted by owner within grouping
+# Part 1 - ticket sorted by age within owner
+
+owner_durs <- dat %>% arrange(Owner, Duration) %>% select(-Desc)
 
 cat("===========================================================================")
 cat("Part 1: Tickets Sorted by Owner Within Age")
+cat("===========================================================================", "\n")
+
+cat("Open Tickets by Owner")
+owner_durs
+
+# Part 2 - print out chronological groupings sorted by owner within grouping
+
+cat("===========================================================================")
+cat("Part 2: Tickets Sorted by Owner Within Age")
 cat("===========================================================================", "\n")
 
 cat("Open Tickets Aged over 60 Days")

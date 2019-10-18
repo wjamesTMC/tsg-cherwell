@@ -51,7 +51,7 @@ library(googlesheets)
 #
 
 # Open the data file - a Google Sheet in user's top level directory
-data_filename <- gs_title("CAR-input-2019-10-04")
+data_filename <- gs_title("CAR-input-2019-10-18")
 dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE)
 
 # Generate the week ending data from the data file name
@@ -100,17 +100,33 @@ SR_sla       <- dat %>% filter(Type =="SR" & Duration <= 10) %>% select(-Desc)
 SR_sla_perc  <- (nrow(SR_sla) / nrow(dat %>% filter(Type == "SR"))) * 100
 SR_sla_perc  <- round(SR_sla_perc, digits = 2)
 
+# Part 1 - ticket sorted by age within owner
+
+owner_durs <- dat %>% arrange(Owner, Duration) %>% select(-Desc)
+
 ```
 
-===========================================================================
-
-**Part  1 - Tickets Sorted by Owner Within Age**
-
-===========================================================================
 
 **Total open tickets: `r nrow(dat)` / Incidents: `r nrow(dat %>% filter(Type == "Inc"))` / SR's: `r nrow(dat %>% filter(Type == "SR"))`**  
 Incidents meeting SLA guidelines: `r inc_sla_perc` %  
 Service Requests meeting SLA guidelines: `r SR_sla_perc` %
+
+===========================================================================
+
+**Part 1 - Tickets Sorted by Age Within Owner**
+
+===========================================================================
+
+```{r Age within Owners, echo=FALSE, comment=NA}
+knitr::kable(owner_durs) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+```
+
+`r pagebreak()`
+
+===========================================================================
+
+**Part  2 - Tickets Sorted by Owner Within Age**
 
 ===========================================================================  
 Group 1: Aged over 60 Days - `r nrow(over_60)` tickets `r round((nrow(over_60) / nrow(dat) * 100), digits = 2)` % of total  
@@ -161,7 +177,7 @@ cat("\n")
 `r pagebreak()`
 
 ===========================================================================  
-Part 2: Graphics  
+Part 3 - Graphics  
 ===========================================================================  
 
 ```{r Graphics Section, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
