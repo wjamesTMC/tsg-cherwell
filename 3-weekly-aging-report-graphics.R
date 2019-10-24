@@ -31,6 +31,7 @@ library(janitor)
 library(rmarkdown)
 library(kableExtra)
 library(lubridate)
+library(googlesheets)
 
 #--------------------------------------------------------------------
 #
@@ -39,9 +40,15 @@ library(lubridate)
 #--------------------------------------------------------------------
 
 # Open File
-data_filename <- "CopyOf0_Output_cherwell_stats.csv"
-dat <- read.csv(file = data_filename, header = TRUE, stringsAsFactors = FALSE)
-dat <- dat %>% arrange(Week_Ending)
+data_filename <- gs_title("CAR-output-cherwell-stats")
+dat <- gs_read(data_filename, header = TRUE, stringsAsFactors = FALSE)
+
+# Limit the number of weeks displayed to the most recent 3 months / quarter
+dat <- tail(dat, 13)
+
+# Force the dates to sort (and plot) in ascending order
+dat$Week_Ending <- as.character(dat$Week_Ending)
+dat$Week_Ending <- factor(dat$Week_Ending, levels=unique(dat$Week_Ending))
 
 # Number of Opens by Week
 Opens_by_Week <- ggplot() +

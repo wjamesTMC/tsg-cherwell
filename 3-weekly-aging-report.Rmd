@@ -225,6 +225,9 @@ gs_add_row(output_file, ws = 1, input = week_ending_data, verbose = FALSE)
 data_filename <- gs_title("CAR-output-cherwell-stats")
 dat <- gs_read(data_filename, header = TRUE, stringsAsFactors = FALSE)
 
+# Limit the number of weeks displayed to the most recent 3 months / quarter
+dat <- tail(dat, 13)
+
 # Force the dates to sort (and plot) in ascending order
 dat$Week_Ending <- as.character(dat$Week_Ending)
 dat$Week_Ending <- factor(dat$Week_Ending, levels=unique(dat$Week_Ending))
