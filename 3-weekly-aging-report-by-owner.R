@@ -93,6 +93,25 @@ SR_sla_perc  <- (nrow(SR_sla) / nrow(dat %>% filter(Type == "SR"))) * 100
 SR_sla_perc  <- round(SR_sla_perc, digits = 2)
 
 
+pagebreak <- function() {
+     if(knitr::is_latex_output())
+          return("\\newpage")
+     else
+          return('<div style="page-break-before: always;" />')
+}
+
+# Print out tickets by owner
+owner_list <- unique(dat$Owner)
+
+# for(i in 1:length(owner_list)) {
+for(i in 1:2) {     
+     owner_file <- paste("CAR-", owner_list[i], "Tickets", Week_Ending)
+     owner_file <- sub(" ", "", owner_file)
+     sheet_data <- dat %>% filter(Owner == owner_list[i])
+     gs_new(title = owner_file, input = sheet_data)
+}
+
+
 #
 # Print out results
 #
