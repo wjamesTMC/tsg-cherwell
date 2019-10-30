@@ -62,12 +62,11 @@ dat <- rename(dat, replace = c("Incident ID" = "ID",
                                "Created Date Time" = "Created",
                                "Customer Display Name" = "Customer",
                                "Incident Type" = "Type",
-                               "Short Description" = "Desc",
                                "Owned By" = "Owner",
                                "SLA Resolve By Deadline" = "Due"))
 
 # Get rid of unneeded column and row information and sort by created date
-dat <- dat %>% select(ID, Created, Customer, Type, Desc, Owner, Due)
+dat <- dat %>% select(ID, Created, Customer, Type, Owner, Due)
 dat <- dat %>% filter(dat$Created != "")
 
 # Shorten some fields
@@ -86,111 +85,20 @@ dat <- dat %>% mutate(Duration = difftime(as.Date(Week_Ending), dat$Created, uni
 dat <- dat %>% arrange(desc(Duration))
 
 # Establish groupings for the open tickets
-days_07 <- dat %>% filter(Duration <=  7) %>% select(-Desc)
-days_30 <- dat %>% filter(Duration <= 30 & Duration >  7) %>% select(-Desc)
-days_60 <- dat %>% filter(Duration <= 60 & Duration > 30) %>% select(-Desc)
-over_60 <- dat %>% filter(Duration >  60) %>% select(-Desc)
+days_07 <- dat %>% filter(Duration <=  7) 
+days_30 <- dat %>% filter(Duration <= 30 & Duration >  7) 
+days_60 <- dat %>% filter(Duration <= 60 & Duration > 30) 
+over_60 <- dat %>% filter(Duration >  60) 
 
 # Establish groupings for SLA compliance
-inc_sla      <- dat %>% filter(Type == "Inc" & Duration <=  2) %>% select(-Desc)
+inc_sla      <- dat %>% filter(Type == "Inc" & Duration <=  2) 
 inc_sla_perc <- (nrow(inc_sla) / nrow(dat %>% filter(Type == "Inc"))) * 100
 inc_sla_perc <- round(inc_sla_perc, digits = 2)
 
-SR_sla       <- dat %>% filter(Type =="SR" & Duration <= 10) %>% select(-Desc)
+SR_sla       <- dat %>% filter(Type =="SR" & Duration <= 10) 
 SR_sla_perc  <- (nrow(SR_sla) / nrow(dat %>% filter(Type == "SR"))) * 100
 SR_sla_perc  <- round(SR_sla_perc, digits = 2)
 
-# Part 1 - ticket sorted by age within owner
-
-owner_durs <- dat %>% arrange(Owner, Duration) %>% select(-Desc)
-
-# Print out tickets by owner
-owner_list <- unique(dat$Owner)
-
-for(i in 1:length(owner_list)) {
-     x <- dat %>% filter(Owner == owner_list[i])
-     print(x)
-     pagebreak
-}
-
-
-```
-
-
-**Total open tickets: `r nrow(dat)` / Incidents: `r nrow(dat %>% filter(Type == "Inc"))` / SR's: `r nrow(dat %>% filter(Type == "SR"))`**  
-Incidents meeting SLA guidelines: `r inc_sla_perc` %  
-Service Requests meeting SLA guidelines: `r SR_sla_perc` %
-
-===========================================================================
-
-**Part 1 - Tickets Sorted by Age Within Owner**
-
-===========================================================================
-
-```{r Age within Owners, echo=FALSE, comment=NA}
-knitr::kable(owner_durs) %>%
-  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
-```
-
-`r pagebreak()`
-
-===========================================================================
-
-**Part  2 - Tickets Sorted by Owner Within Age**
-
-===========================================================================  
-Group 1: Aged over 60 Days - `r nrow(over_60)` tickets `r round((nrow(over_60) / nrow(dat) * 100), digits = 2)` % of total  
-===========================================================================  
-
-```{r 1-1 60 Day Summary, echo=FALSE, comment=NA}
-
-over_60 <- over_60 %>% arrange(Owner, desc(Duration))
-knitr::kable(over_60) %>%
-  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
-cat("\n")
-```
-
-===========================================================================  
-Group 2: Aged 30 - 60 Days - `r nrow(days_60)` tickets `r round((nrow(days_60) / nrow(dat) * 100), digits = 2)` % of total  
-===========================================================================  
-
-```{r 1-2 30 to 60 Summary, echo=FALSE}
-
-days_60 <- days_60 %>% arrange(Owner, desc(Duration))
-knitr::kable(days_60) %>%
-  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
-cat("\n")
-```
-
-===========================================================================  
-Group 3: Aged up to 30 Days - `r nrow(days_30)` tickets `r round((nrow(days_30) / nrow(dat) * 100), digits = 2)` % of total  
-===========================================================================  
-
-```{r 1-3 Up to 30 Days Summary, echo=FALSE}
-days_30 <- days_30 %>% arrange(Owner, desc(Duration))
-knitr::kable(days_30) %>%
-  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
-cat("\n")
-```
-
-===========================================================================  
-Group 4: Aged 1 Week or Less - `r nrow(days_07)` tickets `r round((nrow(days_07) / nrow(dat) * 100), digits = 2)` % of total  
-===========================================================================  
-
-```{r 1-4 Summary up to 7 days, echo=FALSE}
-days_07 <- days_07 %>% arrange(Owner, desc(Duration))
-knitr::kable(days_07) %>%
-  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
-cat("\n")
-```
-
-`r pagebreak()`
-
-===========================================================================  
-Part 3 - Graphics  
-===========================================================================  
-
-```{r Graphics Section, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 #
 # Capture statistics for this week and append to file
 #
@@ -207,7 +115,7 @@ Days_30       <- nrow(days_30)
 Days_60       <- nrow(days_60)
 Over_60       <- nrow(over_60)
 
-# Create dataframe to hold the results
+# Create dataframe to hold the results for writing to the file
 week_ending_data <- data.frame(Week_Ending,
                                Opens,
                                Incidents,
@@ -224,6 +132,213 @@ week_ending_data <- data.frame(Week_Ending,
 # Open historical data file and append current week's data
 output_file <- gs_title("CAR-output-cherwell-stats")
 gs_add_row(output_file, ws = 1, input = week_ending_data, verbose = FALSE)
+
+# Part 1 - ticket sorted by age within owner
+
+owner_durs <- dat %>% arrange(Owner, desc(Duration)) 
+
+# Open file with list of staff names
+staff_filename <- gs_title("CAR-SD_Staff_List")
+staff_list     <- gs_read(staff_filename, header = TRUE, stringsAsFactors = TRUE)
+sd_staff       <- staff_list %>% filter(WAR == "Y") %>% select(Owner)
+nsd_staff      <- staff_list %>% filter(WAR == "N") %>% select(Owner)
+
+# Service Desk Staff groupings
+SL1 <- owner_durs %>% filter(Owner == sd_staff$Owner[1])
+SL2 <- owner_durs %>% filter(Owner == sd_staff$Owner[2])
+SL3 <- owner_durs %>% filter(Owner == sd_staff$Owner[3])
+SL4 <- owner_durs %>% filter(Owner == sd_staff$Owner[4])
+SL5 <- owner_durs %>% filter(Owner == sd_staff$Owner[5])
+SL6 <- owner_durs %>% filter(Owner == sd_staff$Owner[6])
+SL7 <- owner_durs %>% filter(Owner == sd_staff$Owner[7])
+
+```
+
+
+**Total open tickets: `r nrow(dat)` / Incidents: `r nrow(dat %>% filter(Type == "Inc"))` / SR's: `r nrow(dat %>% filter(Type == "SR"))`**  
+Incidents meeting SLA guidelines: `r inc_sla_perc` %  
+Service Requests meeting SLA guidelines: `r SR_sla_perc` %
+
+===========================================================================
+
+**Part 1 - Service Desk Team - Tickets by Owner Sorted by Age**
+
+===========================================================================
+
+`r pagebreak()`
+
+```{r sln1, echo=FALSE, comment=NA}
+
+cat(">>>", sd_staff$Owner[1], "Total tickets:", nrow(SL1), "\n")
+
+if(nrow(SL1) == 0) {
+     cat("No current tickets for", sd_staff$Owner[1])
+} else {
+     knitr::kable(SL1) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+}
+```
+
+`r pagebreak()`
+
+```{r sln2, echo=FALSE, comment=NA}
+
+cat(">>>", sd_staff$Owner[2], "Total tickets:", nrow(SL2), "\n")
+
+if(nrow(SL2) == 0) {
+     cat("No current tickets for", sd_staff$Owner[2])
+} else {
+     knitr::kable(SL2) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+}
+```
+
+`r pagebreak()`
+
+```{r sln3, echo=FALSE, comment=NA}
+
+cat(">>>", sd_staff$Owner[3], "Total tickets:", nrow(SL3), "\n")
+
+if(nrow(SL3) == 0) {
+     cat("No current tickets for", sd_staff$Owner[3])
+} else {
+     knitr::kable(SL3) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+}
+```
+
+`r pagebreak()`
+
+```{r sln4, echo=FALSE, comment=NA}
+
+cat(">>>", sd_staff$Owner[4], "Total tickets:", nrow(SL4), "\n")
+
+if(nrow(SL4) == 0) {
+     cat("No current tickets for", sd_staff$Owner[4])
+} else {
+     knitr::kable(SL4) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+}
+```
+
+`r pagebreak()`
+
+```{r sln5, echo=FALSE, comment=NA}
+
+cat(">>>", sd_staff$Owner[5], "Total tickets:", nrow(SL5), "\n")
+
+if(nrow(SL5) == 0) {
+     cat("No current tickets for", sd_staff$Owner[5])
+} else {
+     knitr::kable(SL5) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+}
+```
+
+`r pagebreak()`
+
+```{r sln6, echo=FALSE, comment=NA}
+
+cat(">>>", sd_staff$Owner[6], "Total tickets:", nrow(SL6), "\n")
+
+if(nrow(SL6) == 0) {
+     cat("No current tickets for", sd_staff$Owner[6])
+} else {
+     knitr::kable(SL6) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+}
+```
+
+`r pagebreak()`
+
+```{r sln7, echo=FALSE, comment=NA}
+
+cat(">>>", sd_staff$Owner[7], "Total tickets:", nrow(SL7), "\n")
+
+if(nrow(SL7) == 0) {
+     cat("No current tickets for", sd_staff$Owner[7])
+} else {
+     knitr::kable(SL7) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+}
+```
+
+`r pagebreak()`
+
+===========================================================================
+
+**Part  2 - Remaining Tickets Sorted by Non-Service Desk Owner**  
+
+
+```{r 1-1 60 Day Summary, echo=FALSE, comment=NA}
+
+# Set up the piles of SD staff tickets, Other owner tickets, unassigned tickets
+nsd_dat <- merge(x = dat, y = nsd_staff, by = "Owner") 
+una_dat <- dat %>% filter(Owner == unique(dat$Owner[6])) 
+nsd_dat <- rbind(nsd_dat, una_dat) %>% arrange(Owner, desc(Duration))
+
+# Establish groupings for the open tickets - but without sd staff included
+nsd_days_07 <- nsd_dat %>% filter(Duration <=  7) 
+nsd_days_30 <- nsd_dat %>% filter(Duration <= 30 & Duration >  7) 
+nsd_days_60 <- nsd_dat %>% filter(Duration <= 60 & Duration > 30) 
+nsd_over_60 <- nsd_dat %>% filter(Duration >  60) 
+```
+
+===========================================================================  
+**Group 1: Total Tickets over 60 Days: `r nrow(over_60)` (`r round((nrow(over_60) / nrow(dat) * 100), digits = 2)` % of total)**  
+**Non-Service Desk Tickets: `r nrow(nsd_over_60)`**  
+===========================================================================  
+
+```{r NSD1 60 Day Summary, echo=FALSE, comment=NA}
+
+nsd_over_60 <- nsd_over_60 %>% arrange(Owner, desc(Duration))
+knitr::kable(nsd_over_60) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+cat("\n")
+```
+
+===========================================================================  
+**Group 2: Total Tickets Aged 30 - 60 Days: `r nrow(days_60)` (`r round((nrow(days_60) / nrow(dat) * 100), digits = 2)` % of total)**  
+**Non-Service Desk Tickets: `r nrow(nsd_days_60)`**  
+===========================================================================  
+
+```{r 1-2 30 to 60 Summary, echo=FALSE}
+
+nsd_days_60 <- nsd_days_60 %>% arrange(Owner, desc(Duration))
+knitr::kable(nsd_days_60) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+cat("\n")
+```
+
+===========================================================================  
+**Group 3: Total Tickets Aged up to 30 Days: `r nrow(days_30)` (`r round((nrow(days_30) / nrow(dat) * 100), digits = 2)` % of total)**   **Non-Service Desk Tickets: `r nrow(nsd_days_30)`**  
+===========================================================================  
+
+```{r 1-3 Up to 30 Days Summary, echo=FALSE}
+nsd_days_30 <- nsd_days_30 %>% arrange(Owner, desc(Duration))
+knitr::kable(nsd_days_30) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+cat("\n")
+```
+
+===========================================================================  
+**Group 4: Total Tickets Aged 1 Week or Less: `r nrow(days_07)` (`r round((nrow(days_07) / nrow(dat) * 100), digits = 2)` % of total)**   **Non-Service Desk Tickets: `r nrow(nsd_days_07)`**  
+===========================================================================  
+
+```{r 1-4 Summary up to 7 days, echo=FALSE}
+nsd_days_07 <- nsd_days_07 %>% arrange(Owner, desc(Duration))
+knitr::kable(nsd_days_07) %>%
+  kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+cat("\n")
+```
+
+`r pagebreak()`
+
+===========================================================================  
+Part 3 - Graphics  
+===========================================================================  
+
+```{r Graphics Section, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 
 #--------------------------------------------------------------------
 #

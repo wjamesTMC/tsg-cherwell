@@ -42,8 +42,13 @@ library(googlesheets)
 # Open the Google Sheet
 #
 
+# Open file with list of staff names
+staff_filename <- gs_title("CAR-SD_Staff_List")
+staff_list     <- gs_read(staff_filename, header = TRUE, stringsAsFactors = TRUE)
+staff_list     <- staff_list %>% filter(WAR == "Y") %>% select(Owner)
+
 # Open the data file - a Google Sheet in user's top level directory
-data_filename <- gs_title("CAR-input-2019-10-18")
+data_filename <- gs_title("CAR-input-2019-10-25")
 dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE)
 
 # Generate the week ending data from the data file name
@@ -92,9 +97,17 @@ SR_sla       <- dat %>% filter(Type =="SR" & Duration <= 10) %>% select(-Desc)
 SR_sla_perc  <- (nrow(SR_sla) / nrow(dat %>% filter(Type == "SR"))) * 100
 SR_sla_perc  <- round(SR_sla_perc, digits = 2)
 
+# Service Desk Staff groupings
+Kami_Evarts     <- dat %>% filter(Owner == "Kami Evarts")
+Sean_Austin     <- dat %>% filter(Owner == "Sean Austin")
+David_Palefsky  <- dat %>% filter(Owner == "David Palefsky")
+John_Pisini     <- dat %>% filter(Owner == "John Pisini")
+Maurice_Coleman <- dat %>% filter(Owner == "Maurice Coleman")
+Paul_Doherty    <- dat %>% filter(Owner == "Paul Doherty")
+Ben_Chase       <- dat %>% filter(Owner == "Ben Chase")
 
 #
-# Print out results
+# Print out Summary and Results
 #
 
 cat("Total open tickets:", nrow(dat), "/ Incidents:", 
@@ -173,6 +186,14 @@ week_ending_data <- data.frame(Week_Ending,
 # Open historical data file and append current week's data
 output_file <- gs_title("CAR-output-cherwell-stats")
 gs_add_row(output_file, ws = 1, input = week_ending_data, verbose = TRUE)
+
+# Write out individual staff files as Google Sheets
+for(i in 1:no_staff_list) {
+     staff_dat <- dat %>% filter(dat$Owner == staff_list$Owner[i])
+     staff_ofn <- paste("CAR", staff_list$Owner[i], Week_Ending)
+     staff_ofd <- gs_new(staff_ofn)
+     gs_edit_cells(staff_ofd, ws = "Sheet1", anchor = "A1", input = staff_dat, byrow = TRUE)
+}
 
 #--------------------------------------------------------------------
 #
