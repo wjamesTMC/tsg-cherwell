@@ -1,34 +1,25 @@
-##############################################################################
-#
-# Cherwell Weekly Aging Report
-# Bill James / jamesw@csps.com
-#
-# Files:  https://github.com/wjamesTMC/tsg-cherwell.git
-#
-##############################################################################
+---
+title: "Cherwell Weekly Aging Report"
+date: "October 31, 2019"
+output: pdf_document
+---
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r File open and setup, include=FALSE}
 #
 # Library setups
 #
 
-# Import libraries
 library(tidyverse)
 library(tidyr)
 library(plyr)
 library(dplyr)
-library(caret)
-library(ggplot2)
-library(ggthemes)
-library(extrafont)
-library(scales)
-library(stringi)
-library(grid)
-library(gridExtra)
-library(lattice)
-library(janitor)
+library(knitr)
 library(rmarkdown)
-library(kableExtra)
-library(lubridate)
 library(stringr)
 library(googlesheets)
 
@@ -122,8 +113,8 @@ week_ending_data <- data.frame(Week_Ending,
                                Over_60)
 
 # Open historical data file and append current week's data
-output_file <- gs_title("CAR-output-cherwell-stats")
-gs_add_row(output_file, ws = 1, input = week_ending_data, verbose = FALSE)
+# output_file <- gs_title("CAR-output-cherwell-stats")
+# gs_add_row(output_file, ws = 1, input = week_ending_data, verbose = FALSE)
 
 # Part 1 - ticket sorted by age within owner
 
@@ -135,107 +126,34 @@ staff_list     <- gs_read(staff_filename, header = TRUE, stringsAsFactors = TRUE
 sd_staff       <- staff_list %>% filter(WAR == "Y") %>% select(Owner)
 nsd_staff      <- staff_list %>% filter(WAR == "N") %>% select(Owner)
 
-sd_data_list   <- list()
+no_sd_staff    <- length(sd_staff$Owner)
 
-for (i in 1:nrow(sd_staff)) {
+
+```
+
+
+**Total open tickets: `r nrow(dat)` / Incidents: `r nrow(dat %>% filter(Type == "Inc"))` / SR's: `r nrow(dat %>% filter(Type == "SR"))`**  
+Incidents meeting SLA guidelines: `r inc_sla_perc` %  
+Service Requests meeting SLA guidelines: `r SR_sla_perc` %
+
+===========================================================================
+
+**Part 1 - Service Desk Team - Tickets by Owner Sorted by Age**
+
+===========================================================================
+
+```{r Print out staff data, warning=FALSE, , echo=FALSE, results="asis"}
+
+cat("\n\\newpage\n")
+
+for(i in 1:no_sd_staff) {
      x <- owner_durs %>% filter(Owner == sd_staff$Owner[i])
-     sd_data_list[[i]] = data.frame(x)
+     cat(sd_staff$Owner[i], "\n")
+     if(nrow(x) == 0) {
+          cat("\n", "No current tickets for", sd_staff$Owner[i])
+          } else {
+               print(knitr::kable(x[1:nrow(x), ]))
+          }
+
+     cat("\n\\newpage\n")
 }
-
-#
-# Print out Summary and Results
-#
-
-cat("Total open tickets:", nrow(dat), "/ Incidents:", 
-    nrow(dat %>% filter(Type == "Inc")), "/ SR's:",
-         nrow(dat %>% filter(Type == "SR")))
-cat("Incidents meeting SLA guidelines:", inc_sla_perc, "%")
-cat("Service Requests meeting SLA guidelines:", SR_sla_perc, "%")
-
-# Part 1 - ticket sorted by age within owner
-
-owner_durs <- dat %>% arrange(Owner, Duration) %>% select(-Desc)
-
-cat("===========================================================================")
-cat("Part 1: Tickets Sorted by Owner Within Age")
-cat("===========================================================================", "\n")
-
-cat("Open Tickets by Owner")
-owner_durs
-
-# Part 2 - print out chronological groupings sorted by owner within grouping
-
-cat("===========================================================================")
-cat("Part 2: Tickets Sorted by Owner Within Age")
-cat("===========================================================================", "\n")
-
-cat("Open Tickets Aged over 60 Days")
-over_60 <- over_60 %>% arrange(Owner, desc(Duration))
-over_60
-cat("\n")
-
-cat("Open Tickets Aged 30 - 60 Days")
-days_60 <- days_60 %>% arrange(Owner, desc(Duration))
-days_60
-cat("\n")
-
-cat("Open Tickets Aged up to 30 Days")
-days_30 <- days_30 %>% arrange(Owner, desc(Duration))
-days_30
-cat("\n")
-
-cat("Open Tickets Aged 1 Week")
-days_07 <- days_07 %>% arrange(Owner, desc(Duration))
-days_07
-cat("\n")
-
-#
-# Capture statistics for this week and append to file
-#
-
-Opens         <- nrow(dat)
-Incidents     <- nrow(dat %>% filter(Type == "Inc"))
-Inc_Percent   <- round(((Incidents / Opens) * 100), digits = 1)
-Inc_Mtg_SLA   <- inc_sla_perc
-SRs           <- nrow(dat %>% filter(Type == "SR"))
-SR_Percent    <- round(((SRs / Opens) * 100), digits = 1)
-SR_Mtg_SLA    <- SR_sla_perc
-Days_07       <- nrow(days_07)
-Days_30       <- nrow(days_30)
-Days_60       <- nrow(days_60)
-Over_60       <- nrow(over_60)
-
-# Create dataframe to hold the results
-week_ending_data <- data.frame(Week_Ending,
-                               Opens,
-                               Incidents,
-                               Inc_Percent,
-                               Inc_Mtg_SLA,
-                               SRs,
-                               SR_Percent,
-                               SR_Mtg_SLA,
-                               Days_07,
-                               Days_30,
-                               Days_60,
-                               Over_60)
-
-# Open historical data file and append current week's data
-output_file <- gs_title("CAR-output-cherwell-stats")
-gs_add_row(output_file, ws = 1, input = week_ending_data, verbose = TRUE)
-
-# Write out individual staff files as Google Sheets
-for(i in 1:no_staff_list) {
-     staff_dat <- dat %>% filter(dat$Owner == staff_list$Owner[i])
-     staff_ofn <- paste("CAR", staff_list$Owner[i], Week_Ending)
-     staff_ofd <- gs_new(staff_ofn)
-     gs_edit_cells(staff_ofd, ws = "Sheet1", anchor = "A1", input = staff_dat, byrow = TRUE)
-}
-
-#--------------------------------------------------------------------
-#
-# End
-#
-#--------------------------------------------------------------------
-
-
-
