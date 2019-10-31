@@ -143,14 +143,16 @@ staff_list     <- gs_read(staff_filename, header = TRUE, stringsAsFactors = TRUE
 sd_staff       <- staff_list %>% filter(WAR == "Y") %>% select(Owner)
 nsd_staff      <- staff_list %>% filter(WAR == "N") %>% select(Owner)
 
-# Service Desk Staff groupings
-SL1 <- owner_durs %>% filter(Owner == sd_staff$Owner[1])
-SL2 <- owner_durs %>% filter(Owner == sd_staff$Owner[2])
-SL3 <- owner_durs %>% filter(Owner == sd_staff$Owner[3])
-SL4 <- owner_durs %>% filter(Owner == sd_staff$Owner[4])
-SL5 <- owner_durs %>% filter(Owner == sd_staff$Owner[5])
-SL6 <- owner_durs %>% filter(Owner == sd_staff$Owner[6])
-SL7 <- owner_durs %>% filter(Owner == sd_staff$Owner[7])
+no_sd_staff    <- length(sd_staff$Owner)
+
+# Create a list to hold Service Desk Staff groupings
+sd_data_list   <- list()
+
+#Loop to generate groupings and populate the list
+for (i in 1:no_sd_staff) {
+     x <- owner_durs %>% filter(Owner == sd_staff$Owner[i])
+     sd_data_list[[i]] = data.frame(x)
+}
 
 ```
 
@@ -169,12 +171,14 @@ Service Requests meeting SLA guidelines: `r SR_sla_perc` %
 
 ```{r sln1, echo=FALSE, comment=NA}
 
-cat(">>>", sd_staff$Owner[1], "Total tickets:", nrow(SL1), "\n")
+i <- 1
 
-if(nrow(SL1) == 0) {
-     cat("No current tickets for", sd_staff$Owner[1])
+cat(">>>", sd_staff$Owner[i], "Total tickets:", nrow(sd_data_list[[i]]), "\n")
+
+if(nrow(sd_data_list[[i]]) == 0) {
+     cat("No current tickets for", sd_staff$Owner[i])
 } else {
-     knitr::kable(SL1) %>%
+     knitr::kable(sd_data_list[[i]]) %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 }
 ```
@@ -183,12 +187,18 @@ if(nrow(SL1) == 0) {
 
 ```{r sln2, echo=FALSE, comment=NA}
 
-cat(">>>", sd_staff$Owner[2], "Total tickets:", nrow(SL2), "\n")
-
-if(nrow(SL2) == 0) {
-     cat("No current tickets for", sd_staff$Owner[2])
+if(no_sd_staff != i) {
+     i <- i + 1
 } else {
-     knitr::kable(SL2) %>%
+     cat("All staff have been processed", "\n")
+}
+
+cat(">>>", sd_staff$Owner[i], "Total tickets:", nrow(sd_data_list[[i]]), "\n")
+
+if(nrow(sd_data_list[[i]]) == 0) {
+     cat("No current tickets for", sd_staff$Owner[i])
+} else {
+     knitr::kable(sd_data_list[[i]]) %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 }
 ```
@@ -197,12 +207,18 @@ if(nrow(SL2) == 0) {
 
 ```{r sln3, echo=FALSE, comment=NA}
 
-cat(">>>", sd_staff$Owner[3], "Total tickets:", nrow(SL3), "\n")
-
-if(nrow(SL3) == 0) {
-     cat("No current tickets for", sd_staff$Owner[3])
+if(no_sd_staff != i) {
+     i <- i + 1
 } else {
-     knitr::kable(SL3) %>%
+     cat("All staff have been processed", "\n")
+}
+
+cat(">>>", sd_staff$Owner[i], "Total tickets:", nrow(sd_data_list[[i]]), "\n")
+
+if(nrow(sd_data_list[[i]]) == 0) {
+     cat("No current tickets for", sd_staff$Owner[i])
+} else {
+     knitr::kable(sd_data_list[[i]]) %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 }
 ```
@@ -211,12 +227,18 @@ if(nrow(SL3) == 0) {
 
 ```{r sln4, echo=FALSE, comment=NA}
 
-cat(">>>", sd_staff$Owner[4], "Total tickets:", nrow(SL4), "\n")
-
-if(nrow(SL4) == 0) {
-     cat("No current tickets for", sd_staff$Owner[4])
+if(no_sd_staff != i) {
+     i <- i + 1
 } else {
-     knitr::kable(SL4) %>%
+     cat("All staff have been processed", "\n")
+}
+
+cat(">>>", sd_staff$Owner[i], "Total tickets:", nrow(sd_data_list[[i]]), "\n")
+
+if(nrow(sd_data_list[[i]]) == 0) {
+     cat("No current tickets for", sd_staff$Owner[i])
+} else {
+     knitr::kable(sd_data_list[[i]]) %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 }
 ```
@@ -225,12 +247,18 @@ if(nrow(SL4) == 0) {
 
 ```{r sln5, echo=FALSE, comment=NA}
 
-cat(">>>", sd_staff$Owner[5], "Total tickets:", nrow(SL5), "\n")
-
-if(nrow(SL5) == 0) {
-     cat("No current tickets for", sd_staff$Owner[5])
+if(no_sd_staff != i) {
+     i <- i + 1
 } else {
-     knitr::kable(SL5) %>%
+     cat("All staff have been processed", "\n")
+}
+
+cat(">>>", sd_staff$Owner[i], "Total tickets:", nrow(sd_data_list[[i]]), "\n")
+
+if(nrow(sd_data_list[[i]]) == 0) {
+     cat("No current tickets for", sd_staff$Owner[i])
+} else {
+     knitr::kable(sd_data_list[[i]]) %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 }
 ```
@@ -239,12 +267,18 @@ if(nrow(SL5) == 0) {
 
 ```{r sln6, echo=FALSE, comment=NA}
 
-cat(">>>", sd_staff$Owner[6], "Total tickets:", nrow(SL6), "\n")
-
-if(nrow(SL6) == 0) {
-     cat("No current tickets for", sd_staff$Owner[6])
+if(no_sd_staff != i) {
+     i <- i + 1
 } else {
-     knitr::kable(SL6) %>%
+     cat("All staff have been processed", "\n")
+}
+
+cat(">>>", sd_staff$Owner[i], "Total tickets:", nrow(sd_data_list[[i]]), "\n")
+
+if(nrow(sd_data_list[[i]]) == 0) {
+     cat("No current tickets for", sd_staff$Owner[i])
+} else {
+     knitr::kable(sd_data_list[[i]]) %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
 }
 ```
@@ -253,13 +287,25 @@ if(nrow(SL6) == 0) {
 
 ```{r sln7, echo=FALSE, comment=NA}
 
-cat(">>>", sd_staff$Owner[7], "Total tickets:", nrow(SL7), "\n")
-
-if(nrow(SL7) == 0) {
-     cat("No current tickets for", sd_staff$Owner[7])
+if(no_sd_staff != i) {
+     i <- i + 1
 } else {
-     knitr::kable(SL7) %>%
+     cat("All staff have been processed", "\n")
+}
+
+cat(">>>", sd_staff$Owner[i], "Total tickets:", nrow(sd_data_list[[i]]), "\n")
+
+if(nrow(sd_data_list[[i]]) == 0) {
+     cat("No current tickets for", sd_staff$Owner[i])
+} else {
+     knitr::kable(sd_data_list[[i]]) %>%
   kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+}
+
+if(no_sd_staff != i) {
+     i <- i + 1
+} else {
+     cat("All staff have been processed", "\n")
 }
 ```
 
@@ -311,7 +357,8 @@ cat("\n")
 ```
 
 ===========================================================================  
-**Group 3: Total Tickets Aged up to 30 Days: `r nrow(days_30)` (`r round((nrow(days_30) / nrow(dat) * 100), digits = 2)` % of total)**   **Non-Service Desk Tickets: `r nrow(nsd_days_30)`**  
+**Group 3: Total Tickets Aged up to 30 Days: `r nrow(days_30)` (`r round((nrow(days_30) / nrow(dat) * 100), digits = 2)` % of total)**  
+**Non-Service Desk Tickets: `r nrow(nsd_days_30)`**  
 ===========================================================================  
 
 ```{r 1-3 Up to 30 Days Summary, echo=FALSE}
@@ -322,7 +369,8 @@ cat("\n")
 ```
 
 ===========================================================================  
-**Group 4: Total Tickets Aged 1 Week or Less: `r nrow(days_07)` (`r round((nrow(days_07) / nrow(dat) * 100), digits = 2)` % of total)**   **Non-Service Desk Tickets: `r nrow(nsd_days_07)`**  
+**Group 4: Total Tickets Aged 1 Week or Less: `r nrow(days_07)` (`r round((nrow(days_07) / nrow(dat) * 100), digits = 2)` % of total)**  
+**Non-Service Desk Tickets: `r nrow(nsd_days_07)`**  
 ===========================================================================  
 
 ```{r 1-4 Summary up to 7 days, echo=FALSE}
