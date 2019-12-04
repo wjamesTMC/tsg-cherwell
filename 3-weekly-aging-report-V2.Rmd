@@ -1,0 +1,264 @@
+---
+title: "Cherwell Weekly Aging Report"
+date: "`r format(Sys.time(), '%d %B, %Y')`" 
+output: "html_document"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, out.width='90%')
+pagebreak <- function() {
+  if(knitr::is_latex_output())
+    return("\\newpage")
+  else
+    return('<div style="page-break-before: always;" />')
+}
+```
+
+
+```{r File open and setup, include=FALSE}
+#
+# Library setups
+#
+
+library(tidyverse)
+library(tidyr)
+library(plyr)
+library(dplyr)
+library(caret)
+library(ggplot2)
+library(ggthemes)
+library(extrafont)
+library(scales)
+library(stringi)
+library(grid)
+library(gridExtra)
+library(lattice)
+library(janitor)
+library(rmarkdown)
+library(kableExtra)
+library(lubridate)
+library(stringr)
+library(googlesheets)
+
+#--------------------------------------------------------------------
+#
+# File open, cleanup, and set up for the analysis
+#
+#--------------------------------------------------------------------
+
+#
+# Open the Google Sheet
+#
+
+# Open the data file - a Google Sheet in user's top level directory
+data_filename <- gs_title("CAR-input-2019-11-29")
+dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE)
+
+# Generate the week ending data from the data file name
+Week_Ending <- str_sub(data_filename[2], 11, 20)
+
+# Clean up column / vector names
+dat <- rename(dat, replace = c("Incident ID" = "ID",
+                               "Created Date Time" = "Created",
+                               "Customer Display Name" = "Customer",
+                               "Incident Type" = "Type",
+                               "Owned By" = "Owner",
+                               "SLA Resolve By Deadline" = "Due"))
+
+# Get rid of unneeded column and row information and sort by created date
+dat <- dat %>% select(ID, Created, Customer, Type, Owner, Due)
+dat <- dat %>% filter(dat$Created != "")
+
+# Shorten some fields
+dat[dat == "Incident"]            <- "Inc"
+dat[dat == "Service Request"]     <- "SR"
+
+# Simplify timestamp to simple dates
+dat$Created <- sub(' .*', '', dat$Created)
+dat$Created <- as.Date(dat$Created, format = "%m/%d/%Y")
+
+dat$Due <- sub(' .*', '', dat$Due)
+dat$Due <- as.Date(dat$Due, format = "%m/%d/%Y")
+
+# Add column for days open (Duration)
+dat <- dat %>% mutate(Duration = difftime(as.Date(Week_Ending), dat$Created, units = "days"))
+dat <- dat %>% arrange(desc(Duration))
+
+# Establish groupings for the open tickets
+days_07 <- dat %>% filter(Duration <=  7) 
+days_30 <- dat %>% filter(Duration <= 30 & Duration >  7) 
+days_60 <- dat %>% filter(Duration <= 60 & Duration > 30) 
+over_60 <- dat %>% filter(Duration >  60) 
+
+# Establish groupings for SLA compliance
+inc_sla      <- dat %>% filter(Type == "Inc" & Duration <=  2) 
+inc_sla_perc <- (nrow(inc_sla) / nrow(dat %>% filter(Type == "Inc"))) * 100
+inc_sla_perc <- round(inc_sla_perc, digits = 2)
+
+SR_sla       <- dat %>% filter(Type =="SR" & Duration <= 10) 
+SR_sla_perc  <- (nrow(SR_sla) / nrow(dat %>% filter(Type == "SR"))) * 100
+SR_sla_perc  <- round(SR_sla_perc, digits = 2)
+
+#
+# Capture statistics for this week and append to file
+#
+
+Opens         <- nrow(dat)
+Incidents     <- nrow(dat %>% filter(Type == "Inc"))
+Inc_Percent   <- round(((Incidents / Opens) * 100), digits = 1)
+Inc_Mtg_SLA   <- inc_sla_perc
+SRs           <- nrow(dat %>% filter(Type == "SR"))
+SR_Percent    <- round(((SRs / Opens) * 100), digits = 1)
+SR_Mtg_SLA    <- SR_sla_perc
+Days_07       <- nrow(days_07)
+Days_30       <- nrow(days_30)
+Days_60       <- nrow(days_60)
+Over_60       <- nrow(over_60)
+
+# Create dataframe to hold the results for writing to the file
+week_ending_data <- data.frame(Week_Ending,
+                               Opens,
+                               Incidents,
+                               Inc_Percent,
+                               Inc_Mtg_SLA,
+                               SRs,
+                               SR_Percent,
+                               SR_Mtg_SLA,
+                               Days_07,
+                               Days_30,
+                               Days_60,
+                               Over_60)
+
+# Open historical data file and append current week's data
+output_file <- gs_title("CAR-output-cherwell-stats")
+gs_add_row(output_file, ws = 1, input = week_ending_data, verbose = FALSE)
+
+# Part 1 - ticket sorted by age within owner
+
+owner_durs <- dat %>% arrange(Owner, desc(Duration)) 
+
+# Open file with list of staff names
+staff_filename <- gs_title("CAR-SD_Staff_List")
+staff_list     <- gs_read(staff_filename, header = TRUE, stringsAsFactors = TRUE)
+sd_staff       <- staff_list %>% filter(WAR == "Y") %>% select(Owner)
+nsd_staff      <- staff_list %>% filter(WAR == "N") %>% select(Owner)
+
+for (i in 1:nrow(sd_staff)) {
+     x <- owner_durs %>% filter(Owner == sd_staff$Owner[i])
+     x <- data.frame(x)
+     x <- x %>% arrange(desc(Duration))
+     op_file_name <- paste(Week_Ending, "[",i,"]", sd_staff$Owner[i])
+     gs_new(title = op_file_name, input = x)
+}
+
+```
+
+```{r Graphics Section, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+#--------------------------------------------------------------------
+#
+# Build graphics from historical data
+#
+#--------------------------------------------------------------------
+
+# Open File
+data_filename <- gs_title("CAR-output-cherwell-stats")
+dat <- gs_read(data_filename, header = TRUE, stringsAsFactors = FALSE)
+
+# remove possibility of duplicate rows
+dat <- unique(dat)
+
+# Limit the number of weeks displayed to the most recent 3 months / quarter
+dat <- tail(dat, 13)
+
+# Force the dates to sort (and plot) in ascending order
+dat$Week_Ending <- as.character(dat$Week_Ending)
+dat$Week_Ending <- factor(dat$Week_Ending, levels=unique(dat$Week_Ending))
+
+# Number of Opens by Week
+Opens_by_Week <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Opens, color = "Opens", group = 1), size = 1.5) +
+     theme_economist() +
+     scale_y_continuous(limits=c(0, 500)) +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Number of Opens", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Display plot
+Opens_by_Week
+```
+
+`r pagebreak()`
+
+```{r Overall stats graph, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Number of incidents meeting SLAs
+inc_mtg_slas <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Inc_Mtg_SLA, color = "SLA %", group = 1), size = 1.5) +
+     theme_economist() +
+     scale_y_continuous(limits=c(0, 100)) +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "% Incidents Meeting SLA", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Number of service requests meeting SLAs
+sr_mtg_slas <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$SR_Mtg_SLA, color = "SLA %", group = 1), size = 1.5) +
+     theme_economist() +
+     scale_y_continuous(limits=c(0, 100)) +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "% SRs Meeting SLA", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Arrange the plots
+grid.arrange(inc_mtg_slas, sr_mtg_slas, ncol = 2)
+```
+
+`r pagebreak()`
+
+```{r Days outputs, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Number of 7 days
+plot_days07 <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Days_07, color = "Days <= 7", group = 1), size = 1.5) +
+     scale_y_continuous(limits=c(0, 150)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Tickets Open 7 Days or Less", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Number of 30 days
+plot_days30 <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Days_30, color = "Days <= 30", group = 1), size = 1.5) +
+     scale_y_continuous(limits=c(0, 150)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Tickets Open 8 to 30 Days", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Arrange the plots
+grid.arrange(plot_days07, plot_days30, ncol = 2)
+```
+
+```{r Remaining days plots, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# Number up to 60 days
+plot_days60 <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Days_60, color = "Days <= 60", group = 1), size = 1.5) +
+     scale_y_continuous(limits=c(0, 150)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Tickets Open 31 to 60 Days", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Number over 60
+plot_over60 <- ggplot() +
+     geom_line(data = dat, aes(x = dat$Week_Ending, y = dat$Over_60, color = "Days over 60", group = 1), size = 1.5) +
+     scale_y_continuous(limits=c(0, 150)) +
+     theme_economist() +
+     theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5)) +
+     theme(legend.title = element_blank()) +
+     labs(title = "Tickets Open Over 60 Days", subtitle = "By Week") + xlab("Week") + ylab("Number")
+
+# Arrange the plots
+grid.arrange(plot_days60, plot_over60, ncol = 2)
+```
+
+**End of Report**

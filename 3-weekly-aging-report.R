@@ -30,6 +30,7 @@ library(rmarkdown)
 library(kableExtra)
 library(lubridate)
 library(stringr)
+library("googledrive")
 library(googlesheets)
 
 #--------------------------------------------------------------------
@@ -135,11 +136,16 @@ staff_list     <- gs_read(staff_filename, header = TRUE, stringsAsFactors = TRUE
 sd_staff       <- staff_list %>% filter(WAR == "Y") %>% select(Owner)
 nsd_staff      <- staff_list %>% filter(WAR == "N") %>% select(Owner)
 
-sd_data_list   <- list()
+# sd_data_list   <- list()
 
 for (i in 1:nrow(sd_staff)) {
      x <- owner_durs %>% filter(Owner == sd_staff$Owner[i])
-     sd_data_list[[i]] = data.frame(x)
+     x <- data.frame(x)
+     x <- x %>% arrange(desc(Duration))
+     # sd_data_list[[i]] <- x
+     op_file_name <- paste(Week_Ending, "[",i,"]", sd_staff$Owner[i])
+     gs_new(title = op_file_name, input = x)
+     # drive_mv(op_file_name, path = "Shared drives/Data Analytics Projects/TSG - Weekly Cherwell Aging Reports/Weekly Stafff Reports/")
 }
 
 #
@@ -154,7 +160,7 @@ cat("Service Requests meeting SLA guidelines:", SR_sla_perc, "%")
 
 # Part 1 - ticket sorted by age within owner
 
-owner_durs <- dat %>% arrange(Owner, Duration) %>% select(-Desc)
+owner_durs <- dat %>% arrange(Owner, Duration)
 
 cat("===========================================================================")
 cat("Part 1: Tickets Sorted by Owner Within Age")
