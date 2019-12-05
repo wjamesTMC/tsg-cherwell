@@ -38,6 +38,7 @@ library(rmarkdown)
 library(kableExtra)
 library(lubridate)
 library(stringr)
+library(googledrive)
 library(googlesheets)
 
 #--------------------------------------------------------------------
@@ -51,7 +52,7 @@ library(googlesheets)
 #
 
 # Open the data file - a Google Sheet in user's top level directory
-data_filename <- gs_title("CAR-input-2019-11-30")
+data_filename <- gs_title("CAR-input-2019-11-29")
 dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE)
 
 # Generate the week ending data from the data file name
@@ -160,6 +161,15 @@ for (i in 1:nrow(sd_staff)) {
 # Build graphics from historical data
 #
 #--------------------------------------------------------------------
+
+# data <- 
+#   drive_get(path = "CAR-output-cherwell-stats",
+#           team_drive = as_id("1EXZYWojMctNfcIpyL_YuaM-B0l-zqa4x")) %>% 
+#   select(id) %>% 
+#   combine() %>% 
+#   gs_key(lookup = FALSE, 
+#          visibility = "private") %>% 
+#   gs_read_csv()
 
 # Open File
 data_filename <- gs_title("CAR-output-cherwell-stats")
