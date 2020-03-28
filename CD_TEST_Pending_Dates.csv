@@ -1,0 +1,273 @@
+Open Incidents by Team,,,,,,,,,
+Incident ID,Created Date Time,Customer Display Name,Status,Pend_start,Pend_end,Incident Type,Short Description,Owned By,SLA Resolve By Deadline
+,,,,,,,,,
+38231,12/6/2019 1:22:47 PM,Tessa Frost,New,,,Incident,Pusle Secure,,
+B&MPS,,,,,,,,,
+35376,8/8/2019 3:09:25 PM,BJ Thompson,Assigned,,,Service Request,Event Support,Timothy Malone,8/22/2019 3:09:25 PM
+37360,10/30/2019 2:41:58 PM,Shari Douglas,Assigned,,,Service Request,Event Support,Ian Blaquiere,11/14/2019 2:41:58 PM
+38295,12/10/2019 4:10:17 AM,Jeanne Evans,Assigned,,,Service Request,Media cart needed 1/8/20 in P2-171,Ian Blaquiere,1/3/2020 8:00:00 AM
+38385,12/12/2019 9:56:02 AM,BJ Thompson,Assigned,,,Incident,Report Problem/Outage/Error,Ian Blaquiere,12/12/2019 2:56:02 PM
+Business Applications Support,,,,,,,,,
+12067,1/13/2017 8:16:36 PM,Kate Sims,Pending,1/15/2017 12:00:00 AM,1/28/2017 12:00:00 AM,Service Request,Enterprise - new Audit Report home seasonal addresses,Ryan Hichens,1/31/2017 8:00:00 AM
+12406,1/26/2017 11:28:29 AM,Kate Sims,In Progress,,,Service Request,Enterprise report - changed email but not remove flag,Ryan Hichens,2/9/2017 11:28:29 AM
+13263,2/28/2017 8:35:26 AM,Kate Sims,Pending,3/1/2017 12:00:00 AM,3/10/2017 12:00:00 AM,Service Request,Enterprise - Clearance Feature possible changes,Ryan Hichens,3/14/2017 8:35:26 AM
+13715,3/16/2017 1:28:16 PM,A.J. Kiser,In Progress,,,Service Request,Make Change to ENT - Audit Address rpt role status,Ryan Hichens,3/30/2017 1:28:16 PM
+17513,8/3/2017 12:25:56 PM,Kate Sims,Assigned,,,Service Request,Jason Sell needs to be able to see Deceased/Notified Dates on the Extended Bio Tab,Ryan Hichens,8/17/2017 12:25:56 PM
+17928,8/22/2017 1:19:53 PM,Tom Shea,In Progress,,,Service Request,Ent - weekly activity report for Patrick Harber,Ryan Hichens,9/6/2017 1:19:53 PM
+18092,8/30/2017 9:47:32 AM,Ryan Hichens,Pending,9/1/2017 12:00:00 AM,,Service Request,Review TMCLAP Ack Report - acks not sending,Ryan Hichens,9/14/2017 9:47:32 AM
+18093,8/30/2017 9:58:40 AM,Ryan Hichens,Pending,9/12/2017 12:00:00 AM,,Service Request,Ent Issues with Soft Credits,Ryan Hichens,9/14/2017 9:58:40 AM
+20393,11/27/2017 11:59:49 AM,Nancy James,Pending,11/28/2017 12:00:00 AM,,Service Request,Nancy James Enterprise Tutorial,Ryan Hichens,12/11/2017 11:59:49 AM
+21446,1/11/2018 11:47:21 AM,Alison Kobierski,Pending,1/15/2018 12:00:00 AM,,Service Request,"*** M-Files - Notification of Permissions Change, Fix Box",Emily Hunt,2/7/2018 2:42:00 PM
+22351,2/14/2018 12:04:55 PM,Alison Kobierski,In Progress,,,Service Request,M-Files - OGC Permissions and Meyer Migration,Emily Hunt,3/1/2018 12:04:55 PM
+23243,3/23/2018 9:04:56 AM,Jason Sell,Pending,4/1/2018 12:00:00 AM,,Service Request,M-Files - Option to search by inflected forms can't be disabled,Emily Hunt,4/6/2018 9:04:56 AM
+23595,4/6/2018 11:12:05 AM,Alison Kobierski,In Progress,,,Service Request,*Need more info* M-Files - Folder/Item No Longer Visible,Emily Hunt,8/17/2018 12:30:00 PM
+25828,7/5/2018 1:20:24 PM,Gerald Wilkerson,Pending,7/12/2018 12:00:00 AM,,Service Request,Crystal 2016 access for Sal Giliberto,Ryan Hichens,7/19/2018 1:20:24 PM
+26478,7/31/2018 12:41:30 PM,Kathryn Doerksen,In Progress,,,Service Request,BoL Crystal Report Sentinel Lectures v5 - Add Time Zone,Ryan Hichens,8/14/2018 12:41:30 PM
+26863,8/16/2018 12:15:04 PM,Moises Silva,Pending,8/15/2018 12:00:00 AM,,Service Request,Salesforce Marketing Cloud Increase Access,Emily Moreno,8/30/2018 12:15:04 PM
+27872,9/27/2018 1:16:18 PM,Alison Kobierski,In Progress,,,Service Request,Consider Not Copying Record Management Fields when Cloning Document,Emily Hunt,10/12/2018 1:16:18 PM
+27991,10/2/2018 11:12:24 AM,Christina Henderson,Pending,10/10/2018 12:00:00 AM,,Service Request,10/12 - Enterprise Create 1k Giving Summary Report,Ryan Hichens,10/17/2018 11:12:24 AM
+28432,10/18/2018 5:15:53 PM,Austin Kingsbery,Assigned,,,Service Request,*M-Files OCR effort,Emily Hunt,10/26/2018 8:00:00 AM
+28434,10/18/2018 5:16:55 PM,Emily Hunt,Assigned,,,Service Request,M-Files OCR was not comprehensive,Emily Hunt,11/2/2018 8:00:00 AM
+29827,12/21/2018 9:03:27 AM,Alison Kobierski,Assigned,,,Service Request,OGC permissions,Emily Hunt,1/15/2019 9:03:27 AM
+29831,12/21/2018 1:48:07 PM,Christina Henderson,Pending,12/30/2018 12:00:00 AM,,Service Request,Need to Look at ACK Email Account for Trust Brit,Ryan Hichens,1/15/2019 1:48:07 PM
+30556,1/29/2019 2:27:13 PM,Christina Henderson,Assigned,,,Service Request,*For Ryan* Fwd: ENT REport Access for Lynn and Heidi,Ryan Hichens,2/12/2019 2:27:13 PM
+31732,3/22/2019 11:14:16 AM,Linda Zanoni,Pending,3/25/2019 12:00:00 AM,,Service Request,SAR - Austin Kingsbery,Austin Kingsbery,4/5/2019 11:14:16 AM
+31734,3/22/2019 11:34:53 AM,Linda Zanoni,Pending,3/26/2019 12:00:00 AM,8/15/2019 12:00:00 AM,Service Request,SAR - Mitchell Levine,Austin Kingsbery,4/5/2019 11:34:53 AM
+31739,3/22/2019 3:02:26 PM,Daniel Carr,Assigned,,,Service Request,state codes for India in Enterprise,Ryan Hichens,4/5/2019 3:02:26 PM
+31813,3/26/2019 1:06:06 PM,Brian Abbott,Pending,4/1/2019 12:00:00 AM,,Service Request,Please consolidate the groups and their parent disbanded churches in Enterprise,Ryan Hichens,4/9/2019 1:06:06 PM
+32070,4/3/2019 3:19:41 PM,Haide Bolanos,Assigned,,,Service Request,Salesforce: Re: Advanced Subscription Crossover Report v2-1,Ryan Hichens,4/18/2019 3:19:41 PM
+32743,4/30/2019 3:08:42 PM,Jeanne Evans,Pending,5/13/2019 12:00:00 AM,,Service Request,Enterprise fails to open the Extended Bio,Ryan Hichens,5/14/2019 3:08:42 PM
+32891,5/2/2019 3:03:52 PM,Kate Sims,Assigned,,,Service Request,Assistance with Crystal Reports,Ryan Hichens,5/16/2019 3:03:52 PM
+34552,7/9/2019 6:03:54 PM,Natalie Zdan,Pending,7/20/2019 12:00:00 AM,,Service Request,PENDING Salesforce: Need active subscriber lists for eBL and mBL blasts,,7/24/2019 8:00:00 AM
+35809,8/30/2019 1:15:30 PM,Alison Kobierski,In Progress,,,Service Request,M-Files Slowness,Emily Hunt,9/16/2019 1:15:30 PM
+35872,9/4/2019 11:45:52 AM,Alison Kobierski,In Progress,,,Service Request,M-Files Slowness,Emily Hunt,9/18/2019 11:45:52 AM
+35887,9/4/2019 4:05:46 PM,Diane Bradbury,In Progress,,,Incident,M-Files slowness,Emily Hunt,9/6/2019 4:05:46 PM
+35910,9/5/2019 2:30:11 PM,Alison Kobierski,In Progress,,,Service Request,M-Files slowness,Emily Hunt,9/19/2019 2:30:11 PM
+36184,9/17/2019 9:57:18 AM,Christina Henderson,Assigned,,,Service Request,Merge Robert Waldo ENT Records,Ryan Hichens,10/1/2019 9:57:18 AM
+36318,9/20/2019 3:30:17 PM,Christina Henderson,In Progress,,,Service Request,Fwd: Sensitive Countries list 2019,Ryan Hichens,10/4/2019 3:30:17 PM
+36420,9/24/2019 4:08:31 PM,Alison Kobierski,In Progress,,,Service Request,M-Files Slowness,Emily Hunt,10/8/2019 4:08:31 PM
+36969,10/15/2019 3:46:56 PM,Christina Henderson,In Progress,,,Service Request,ENT: Fwd: Sensitive Countries list 2019,Ryan Hichens,10/29/2019 3:46:56 PM
+36986,10/16/2019 9:36:04 AM,Alison Kobierski,In Progress,,,Service Request,M-Files Slowness,Emily Hunt,10/30/2019 9:36:04 AM
+37037,10/17/2019 1:37:34 PM,Aneta Nilsen,In Progress,,,Incident,M-Files very slooooooow today,Emily Hunt,10/21/2019 1:37:34 PM
+37064,10/18/2019 10:24:59 AM,Alison Kobierski,In Progress,,,Service Request,M-Files Slowness,Emily Hunt,11/1/2019 10:24:59 AM
+37186,10/24/2019 9:06:33 AM,Brian Abbott,In Progress,,,Service Request,"The Society in Bridgewater ME, does not map in GeoPointe",Emily Moreno,11/7/2019 9:06:33 AM
+37201,10/24/2019 12:09:46 PM,Brian Abbott,In Progress,,,Service Request," Is it possible to ""save"" an email in SF in some way.",Emily Moreno,11/7/2019 12:09:46 PM
+37204,10/24/2019 1:57:32 PM,Brian Abbott,In Progress,,,Service Request,Can Conrad Heath and I both have a folder in GeoPointe called Summer 2019 Interns.,Emily Moreno,11/7/2019 1:57:32 PM
+37596,11/7/2019 9:43:09 AM,Stefanie Aimonetti,Assigned,,,Service Request,Enterprise (Access Int'l) Supp,Ryan Hichens,11/22/2019 9:43:09 AM
+37598,11/7/2019 10:03:31 AM,Stefanie Aimonetti,Assigned,,,Service Request,New Member Envelope - Sensitive/Non-Sensitive,Ryan Hichens,11/22/2019 10:03:31 AM
+37625,11/8/2019 1:52:57 PM,Tabitha Kemnitz,In Progress,,,Service Request,Salesforce modification?,Emily Moreno,11/25/2019 1:52:57 PM
+37684,11/13/2019 8:14:38 AM,Matt Poulos,Pending,11/14/2019 12:00:00 AM,,Service Request,CSAT metric for CCC dashboard,Austin Kingsbery,12/2/2019 8:14:38 AM
+37723,11/14/2019 8:56:26 AM,Rufus Streeter,Assigned,,,Service Request,Salesforce Support,Sahil Kaila,12/3/2019 8:56:26 AM
+37725,11/14/2019 8:59:09 AM,Rufus Streeter,Assigned,,,Incident,Another Adjustment,Sahil Kaila,11/18/2019 8:59:09 AM
+37778,11/15/2019 4:32:30 PM,Jan Beard,Assigned,,,Service Request,Enterprise account for Helen Stevermer,,12/5/2019 8:00:00 AM
+37811,11/18/2019 2:24:39 PM,John Titus,In Progress,,,Service Request,Re: New CDS Ticket: Expired CSX and A31 gifts,Austin Kingsbery,12/5/2019 2:24:39 PM
+38064,12/2/2019 4:43:28 PM,Brian Abbott,In Progress,,,Service Request,2 SF member accounts that appear to be blended,Emily Moreno,12/17/2019 8:00:00 AM
+38170,12/5/2019 12:07:18 PM,Brian Abbott,Assigned,,,Incident,Report Problem/Outage/Error,,12/5/2019 5:07:18 PM
+38173,12/5/2019 2:35:57 PM,Jerry McIntire,Assigned,,,Service Request,M-Files new account for Wanda Millett,,12/19/2019 2:35:57 PM
+38174,12/5/2019 2:38:46 PM,Jerry McIntire,Assigned,,,Service Request,M-Files new account for Becky Lovich,,12/19/2019 2:38:46 PM
+38182,12/5/2019 4:05:54 PM,Natalie Zdan,In Progress,,,Incident,"Report request - eBL/CAV, mBL/CBE, both subscribers",Emily Moreno,12/9/2019 4:05:54 PM
+38224,12/6/2019 12:27:16 PM,Christina Henderson,New,,,Service Request,Doubled Soft Credit - Batch 25085,,12/20/2019 12:27:16 PM
+38278,12/9/2019 1:43:37 PM,Julie Cam,Assigned,,,Service Request,Email newsletter preference center,Emily Moreno,1/2/2020 1:43:37 PM
+38311,12/10/2019 9:59:33 AM,Celeste Marble,New,,,Service Request,BdO - Salesforce Support,,
+38315,12/10/2019 10:20:49 AM,Christina Hunt,In Progress,,,Service Request,Fwd: Salesforce Login -  P&DSG team,Emily Moreno,1/3/2020 10:20:49 AM
+38316,12/10/2019 10:21:24 AM,Christina Henderson,New,,,Incident,Re: Doubled Soft Credit - Batch 25085,,12/12/2019 10:21:24 AM
+38328,12/10/2019 2:49:42 PM,Rufus Streeter,Assigned,,,Service Request,Salesforce Support,Sahil Kaila,1/3/2020 2:49:42 PM
+38349,12/11/2019 11:09:04 AM,Amanda Cartwright,Assigned,,,Service Request,Case 437373 access issue,Austin Kingsbery,1/6/2020 11:09:04 AM
+38353,12/11/2019 11:29:08 AM,Lina Joyner,Assigned,,,Incident,Re: Case 437373 access issue,Austin Kingsbery,12/13/2019 11:29:08 AM
+38360,12/11/2019 2:12:34 PM,Stefanie Aimonetti,New,,,Service Request,Enterprise (Access Int'l) Supp,,1/6/2020 2:12:34 PM
+38361,12/11/2019 2:13:24 PM,Stefanie Aimonetti,New,,,Service Request,Enterprise (Access Int'l) Supp,,1/6/2020 2:13:24 PM
+38397,12/12/2019 2:43:40 PM,Christina Henderson,New,,,Service Request,Adding CB Code to an ENT Record,,1/7/2020 2:43:40 PM
+Developers,,,,,,,,,
+12090,1/17/2017 7:09:15 AM,Race Brandt,Assigned,,,Service Request,Fwd: This week's Lesson In-Context,Ethan Joy,1/31/2017 8:00:00 AM
+26587,8/6/2018 8:10:10 AM,Fred Telschow,Assigned,,,Incident,Media links need updating from http to https,Ethan Joy,8/6/2018 1:10:10 PM
+37931,11/21/2019 4:51:12 PM,Kim Sheasley,New,,,Service Request,Fwd: Adobe analytics dashboard not appearing correctly,,12/11/2019 8:00:00 AM
+38058,12/2/2019 2:27:22 PM,Linda Zanoni,New,,,Service Request,"Update the HR site, please",,12/4/2019 2:27:22 PM
+Exits and Long Term Tix,,,,,,,,,
+30066,1/7/2019 3:08:30 PM,Susan Sage,Pending,2/1/2019 12:00:00 AM,9/30/2019 12:00:00 AM,Service Request,"Exit - Phinney, A.W. (Skip) 12/31/18",Kami Evarts,7/26/2019 3:48:00 PM
+Hardware,,,,,,,,,
+37560,11/6/2019 11:45:49 AM,Nathanael Albins,Pending,11/12/2019 12:00:00 AM,,Service Request,By 12/5? Refresh: Replace MD00211 with New iMac,Paul Doherty,11/21/2019 11:45:49 AM
+37565,11/6/2019 1:06:55 PM,Gregory Lamb,Assigned,,,Service Request,Refresh: Replace ML00124 with New Mac Book Air,Michael Gitlin,11/21/2019 1:06:55 PM
+37567,11/6/2019 1:16:58 PM,Harry Bruinius,Assigned,,,Service Request,Refresh: Replace ML00169 with New Mac Book Air,Carlos Alvarez,11/21/2019 1:16:58 PM
+37569,11/6/2019 1:27:52 PM,Robert Witney,Assigned,,,Service Request,Refresh: Replace ML00173 with New MacBook Pro,Paul Doherty,11/21/2019 1:27:52 PM
+37570,11/6/2019 1:40:49 PM,Rebecca Asoulin,Assigned,,,Service Request,Refresh: Replace ML00162 with New MacBook Pro,Carlos Alvarez,11/21/2019 1:40:49 PM
+37576,11/6/2019 3:52:01 PM,Brendunt Scott,In Progress,,,Service Request,Refresh: Replace ML00179 with New MacBook Pro,Paul Doherty,11/21/2019 3:52:01 PM
+37577,11/6/2019 4:01:57 PM,Amy J. Richmond,New,,,Service Request,Refresh: Replace ML00180 with New MacBook Air,,11/21/2019 4:01:57 PM
+37579,11/6/2019 4:11:52 PM,Tom McElroy,New,,,Service Request,Refresh: Replace ML00184 with a New MacBook Air,,11/21/2019 4:11:52 PM
+37580,11/6/2019 4:21:13 PM,Bonnie Castroman,New,,,Service Request,Refresh: Replace ML00185 with New MacBook Air,,11/22/2019 8:00:00 AM
+37583,11/6/2019 4:40:23 PM,Tim Rauschenberger,New,,,Service Request,Refresh: Please Replace ML00104 with A New MacBook Pro,,11/22/2019 8:00:00 AM
+37584,11/6/2019 4:47:02 PM,Bryan Ashley,New,,,Service Request,Refresh: Please Replace ML00107 with A New MacBook Pro,,11/22/2019 8:00:00 AM
+37585,11/6/2019 4:52:41 PM,Christina Hunt,New,,,Service Request,Refresh: Please Replace ML00195 with A New MacBook Pro,,11/22/2019 8:00:00 AM
+37586,11/6/2019 5:01:44 PM,Katie Ward Beim-Esche,Assigned,,,Service Request,Refresh: Please Replace ML00194 With A New MacBook Air,,1/22/2020 12:56:00 PM
+37615,11/8/2019 9:27:28 AM,Alan Messmer,New,,,Service Request,Refresh: Please Replace PL00419 with A New PC Laptop,,11/25/2019 9:27:28 AM
+37624,11/8/2019 1:47:45 PM,Judith A. Huenneke,New,,,Service Request,Refresh: Please Replace PD00342 with a New PC Desktop,,11/25/2019 1:47:45 PM
+37629,11/8/2019 2:35:54 PM,Aaron Bingham,New,,,Service Request,Refresh: Please Replace PD00361 with New PC Desktop,,
+37631,11/8/2019 2:46:43 PM,Bert Hogan,New,,,Service Request,Refresh: Please Replace PD00369 and PD00376 with New PC Desktops,,11/25/2019 2:46:43 PM
+37632,11/8/2019 3:13:24 PM,Delali Davies,New,,,Service Request,Refresh: Please Replace PD00374 with a New MacBook Air,,11/25/2019 3:13:24 PM
+37633,11/8/2019 3:39:55 PM,Stephen Lewis,New,,,Service Request,Refresh: Please Replace PD00375 with New PC Desktop,,11/25/2019 3:39:55 PM
+37637,11/8/2019 4:48:59 PM,Sarah Schelde,In Progress,,,Service Request,Refresh: Please Replace PL00446 with New PC Laptop,Michael Gitlin,11/26/2019 8:00:00 AM
+37674,11/12/2019 4:18:07 PM,Cheryl Ranson,New,,,Service Request,Refresh: Please Replace PL00449 with New PC Laptop,,
+37697,11/13/2019 9:58:23 AM,Fiona Blair,In Progress,,,Service Request,Refresh: Please Replace PL00450 with New PC Laptop,Michael Gitlin,12/2/2019 9:58:23 AM
+37861,11/20/2019 8:33:19 AM,Kami Evarts,New,,,Service Request,Refresh: Please Replace PD00320 With New PC Desktop,,12/9/2019 8:33:19 AM
+37862,11/20/2019 8:43:04 AM,Lisa Darling,New,,,Service Request,Refresh - Please Replace PD00324 With A New PC Desktop,,12/9/2019 8:43:04 AM
+37863,11/20/2019 8:52:23 AM,Lisa Darling,New,,,Service Request,Refresh - Please Replace PD00333 With New PC Desktop,,12/9/2019 8:52:23 AM
+37866,11/20/2019 9:02:42 AM,Lisa Darling,New,,,Service Request,Refresh - Please Replace PD00336 With New PC Desktop,,12/9/2019 9:02:42 AM
+37890,11/20/2019 3:05:15 PM,Lisa Darling,New,,,Service Request,Refresh: Please Replace PD00337 With New PC Desktop,,
+37924,11/21/2019 3:38:01 PM,Emma Herman,Assigned,,,Service Request,Give Ben 3 new monitors in their boxes,Carlos Alvarez,12/10/2019 3:38:01 PM
+37963,11/22/2019 1:18:23 PM,Lisa Darling,New,,,Service Request,Refresh: Please Replace PD00353 With A New PC Desktop,,12/11/2019 1:18:23 PM
+37965,11/22/2019 1:21:55 PM,Lisa Darling,New,,,Service Request,Refresh: Please Replace PD00355 With New PC Desktop,,12/11/2019 1:21:55 PM
+37966,11/22/2019 1:25:25 PM,Lisa Darling,New,,,Service Request,Refresh: Please Replace PD00350 With New PC Desktop,,
+38123,12/4/2019 10:03:14 AM,Arthur Frontczak,In Progress,,,Service Request,Refresh: Replace ML00154 with new MacBook Air,Paul Doherty,12/18/2019 10:03:14 AM
+38261,12/9/2019 8:33:33 AM,Debbie Chibuzor,In Progress,,,Service Request,Telephone Support,Paul Doherty,1/2/2020 8:33:33 AM
+PMO-Salesforce,,,,,,,,,
+23361,3/27/2018 6:24:04 PM,Chaylee Bruce,New,,,Service Request,Request assistance setting up Mitel CCWeb scheduled reports,,4/11/2018 8:00:00 AM
+Purchasing Team,,,,,,,,,
+37985,11/25/2019 9:58:32 AM,Kami Evarts,In Progress,,,Service Request,Approved: Order Apple equipment for inventory and refresh,Race Brandt,12/12/2019 9:58:32 AM
+37988,11/25/2019 10:14:43 AM,Frederick Telschow,In Progress,,,Service Request,Zoom Room Equip for ComPub DC office,Carrie Clayton,12/12/2019 10:14:43 AM
+37997,11/25/2019 3:47:54 PM,Emma Herman,In Progress,,,Service Request,Equipment for new Zoom Room for Federal Office,Race Brandt,12/12/2019 3:47:54 PM
+38279,12/9/2019 1:48:20 PM,Frederick Telschow,In Progress,,,Service Request,Approved: Hardware Purchase Request,Carrie Clayton,1/2/2020 1:48:20 PM
+Service Desk,,,,,,,,,
+33362,5/22/2019 1:54:47 PM,Christina Hunt,Assigned,,,Service Request,Name Change Request,Maurice Coleman,6/6/2019 1:54:47 PM
+33372,5/22/2019 4:21:00 PM,Austin Kingsbery,Assigned,,,Service Request,Update forms for Storing a Start Date & Add Security Change form,Kami Evarts,6/7/2019 8:00:00 AM
+33500,5/29/2019 10:19:10 AM,Tony Veidelis,In Progress,,,Service Request,Question about @christianScience.com for Plaza ACtivities....,Kami Evarts,6/12/2019 10:19:10 AM
+33622,5/31/2019 5:42:47 PM,Ethan Joy,Assigned,,,Service Request,Remove Photoshop CS6 from ML00260,Maurice Coleman,6/17/2019 8:00:00 AM
+34265,6/26/2019 10:50:15 AM,Matt Poulos,In Progress,,,Service Request,Approved: Request to purchase iPhone for CCC Rep,Kami Evarts,7/11/2019 10:50:15 AM
+34730,7/16/2019 1:08:16 PM,Sally Schwartz,Assigned,,,Incident,Re-assigning events not working.,Maurice Coleman,7/18/2019 1:08:16 PM
+34890,7/22/2019 2:27:06 PM,Emily Hunt,Assigned,,,Incident,Name is not showing on google calendar invites,Maurice Coleman,8/2/2019 2:27:06 PM
+35319,8/7/2019 9:20:00 AM,Kami Evarts,Pending,8/20/2019 12:00:00 AM,,Incident,"Google Chrome randomly slows, doesn't respond",Kami Evarts,8/14/2019 9:20:00 AM
+35353,8/8/2019 9:01:29 AM,Gillian Litchfield,In Progress,,,Service Request,Calendar notifications are not popping up,Kami Evarts,8/22/2019 9:01:29 AM
+35371,8/8/2019 12:21:02 PM,Larissa Snorek,In Progress,,,Service Request,Call to schedule – Turning on FileVault,Lisa Darling,8/22/2019 12:21:02 PM
+35396,8/9/2019 3:49:48 PM,Jeff Turton,Pending,9/1/2019 12:00:00 AM,11/2/2019 12:00:00 AM,Service Request,Re: Urgent Compliance Matter – Turning on FileVault,Lisa Darling,8/23/2019 3:49:48 PM
+35478,8/13/2019 1:34:13 PM,Joshua Christian,In Progress,,,Service Request,Exiting Employee - Claire McLeland - 190925??,Kami Evarts,8/27/2019 1:34:13 PM
+35601,8/20/2019 10:23:01 AM,Emily Sander,Pending,8/21/2019 12:00:00 AM,,Incident,Report Problem/Outage/Error,Sean Austin,8/20/2019 3:23:01 PM
+36049,9/11/2019 10:44:58 AM,Celeste Marble,Assigned,,,Service Request,Access for Nathanael Albins to view pdf in shared drive,Maurice Coleman,9/25/2019 10:44:58 AM
+36098,9/12/2019 1:13:35 PM,Deb Sherwood,In Progress,,,Service Request,Re: Calling card for international calls,Kami Evarts,9/26/2019 1:13:35 PM
+36118,9/13/2019 1:41:22 PM,Jasmine Holzworth,Pending,9/15/2019 12:00:00 AM,,Incident,Connecting my work phone to ring my cell phone,Sean Austin,9/17/2019 1:41:22 PM
+36212,9/17/2019 11:42:16 PM,Todd Schauman,Assigned,,,Service Request,Adobe Acrobat license,Maurice Coleman,10/2/2019 8:00:00 AM
+36443,9/25/2019 12:39:00 PM,Deb Sherwood,Assigned,,,Service Request,Last Pass,Maurice Coleman,10/9/2019 12:39:00 PM
+36639,10/3/2019 8:00:07 AM,Frederick Telschow,Assigned,,,Service Request,Help with Tickets,Kami Evarts,10/18/2019 8:00:07 AM
+36705,10/7/2019 8:30:44 AM,Heather Gregory,Assigned,,,Incident,Report Problem/Outage/Error,Maurice Coleman,10/9/2019 8:30:44 AM
+36890,10/11/2019 9:56:19 AM,Jonathan James,In Progress,,,Incident,Fwd: FY 2020 Computer Refresh,Kami Evarts,10/16/2019 9:56:19 AM
+36949,10/15/2019 11:58:07 AM,Mary Ann Lomascolo,In Progress,,,Incident,zoom issue,Sean Austin,10/17/2019 11:58:07 AM
+36953,10/15/2019 1:09:26 PM,TMC Reading Room,In Progress,,,Incident,Gmail filter still not working,Sean Austin,10/17/2019 1:09:26 PM
+37012,10/16/2019 5:06:13 PM,Gaby Mejía,Pending,10/30/2019 12:00:00 AM,,Service Request,Google Calendar Issue,Lisa Darling,10/31/2019 8:00:00 AM
+37158,10/23/2019 10:49:12 AM,Laurent Belsie,In Progress,,,Service Request,"Install Adobe InCopy 2019, K4, UTC 7",Sean Austin,11/6/2019 10:49:12 AM
+37209,10/24/2019 3:21:00 PM,Gabriella(Brie) Burns,In Progress,,,Service Request,Employee Changes,Kami Evarts,11/7/2019 3:21:00 PM
+37241,10/25/2019 6:00:02 PM,Jennifer McLaughlin,In Progress,,,Service Request,"Exit - Jason Hunsberger, 10/24/19",Kami Evarts,11/12/2019 8:00:00 AM
+37262,10/28/2019 8:42:58 AM,Linda Feldmann,In Progress,,,Incident,Problem with email delivery to phone,Kami Evarts,10/30/2019 8:42:58 AM
+37266,10/28/2019 9:30:28 AM,Barry Wills,In Progress,,,Incident,"Trello - Help moving list to another board, rather than copy then delete",Sean Austin,10/30/2019 9:30:28 AM
+37294,10/28/2019 8:43:57 PM,Amy J. Richmond,Pending,10/29/2019 12:00:00 AM,12/15/2019 12:00:00 AM,Service Request,Fwd: Last Pass access or direct access to Producer@ account,Kami Evarts,11/13/2019 8:00:00 AM
+37298,10/29/2019 7:38:53 AM,Clayton Collins,In Progress,,,Service Request,Booted from Universal Type Client,Sean Austin,11/13/2019 8:00:00 AM
+37315,10/29/2019 12:25:47 PM,Joshua Christian,Pending,11/8/2019 12:00:00 AM,,Service Request,Exit - Lauren Littell 191025,Lisa Darling,12/4/2019 11:36:00 AM
+37348,10/30/2019 11:34:44 AM,Christina Hunt,Assigned,,,Service Request,Access/Login Support,Maurice Coleman,11/14/2019 11:34:44 AM
+37356,10/30/2019 1:52:19 PM,Anjuli Carr,Assigned,,,Incident,Unable to print to 410K,Maurice Coleman,11/1/2019 1:52:19 PM
+37388,10/31/2019 11:47:35 AM,Jack Train,Pending,10/31/2019 12:00:00 AM,,Service Request,Exiting Robert Herlinger *191031,Lisa Darling,11/25/2019 12:12:00 PM
+37389,10/31/2019 12:02:11 PM,Jack Train,Pending,11/5/2019 12:00:00 AM,,Service Request,Exiting Kathleen Solomon *191031,Lisa Darling,12/5/2019 11:07:00 AM
+37397,10/31/2019 2:44:28 PM,Lisa Darling,Assigned,,,Service Request,Filewave Updates Pending,Maurice Coleman,11/15/2019 2:44:28 PM
+37512,11/4/2019 11:50:18 PM,Al Belote,Pending,11/18/2019 12:00:00 AM,11/30/2019 12:00:00 AM,Service Request,Can ML00219 be replaced?,Kami Evarts,11/20/2019 8:00:00 AM
+37588,11/7/2019 5:24:25 AM,ChurchtestE,In Progress,,,Service Request,Follow up with Delegates to Exited user mailboxes; can the mailbox be closed,Sean Austin,11/22/2019 8:00:00 AM
+37597,11/7/2019 9:54:59 AM,Amanda Cartwright,In Progress,,,Service Request,"Exit - Hollister Thomas, 11/1/19",Kami Evarts,11/22/2019 9:54:59 AM
+37634,11/8/2019 3:47:23 PM,Natalie Zdan,Assigned,,,Service Request,Refresh: Please Replace PL00445 with New PC Laptop,Kami Evarts,11/25/2019 3:47:23 PM
+37679,11/12/2019 5:30:37 PM,Elizabeth Wallingford,In Progress,,,Service Request,Requesting replacement for PL00489,Kami Evarts,12/2/2019 8:00:00 AM
+37695,11/13/2019 9:50:49 AM,Christina Henderson,In Progress,,,Service Request,Turn Off Configuration Process for Word and Excel,Lisa Darling,12/2/2019 9:50:49 AM
+37713,11/13/2019 2:51:16 PM,Susan Sage,In Progress,,,Incident,My Zoom Meeting Cancelled,Kami Evarts,11/15/2019 2:51:16 PM
+37718,11/13/2019 4:50:37 PM,Amy J. Richmond,Pending,11/20/2019 12:00:00 AM,,Service Request,Courtlyn Reekstin,Kami Evarts,12/3/2019 8:00:00 AM
+37742,11/14/2019 4:06:58 PM,Jerry McIntire,In Progress,,,Service Request,Voice message from Jerry McIntire MB: 5205,Sean Austin,12/3/2019 4:06:58 PM
+37846,11/19/2019 3:00:13 PM,Alfredo Sosa,Assigned,,,Service Request,DVD needs admin creds,Maurice Coleman,12/6/2019 3:00:13 PM
+37851,11/19/2019 3:49:16 PM,Race Brandt,In Progress,,,Incident,202-296-2190 Ring to needs to be reviewed and possible changed,Sean Austin,11/21/2019 3:49:16 PM
+37864,11/20/2019 8:52:37 AM,BJ Thompson,Pending,11/30/2019 12:00:00 AM,,Service Request,"Exiting - Sarah Mungai, 11/27/19",Lisa Darling,12/9/2019 8:52:37 AM
+37886,11/20/2019 1:59:45 PM,Edwin Blomquist,In Progress,,,Service Request,Trello implementation,Kami Evarts,12/9/2019 1:59:45 PM
+37910,11/21/2019 11:00:57 AM,Amy J. Richmond,Pending,11/30/2019 12:00:00 AM,,Service Request,Need help getting onto Enterprise again!,Kami Evarts,12/10/2019 11:00:57 AM
+37923,11/21/2019 3:25:45 PM,Susan Sherwood,In Progress,,,Service Request,Transfer Ownership Of Diane's Google Drive Files Back From Amanda Kiser To Diane Hanover,Sean Austin,12/10/2019 3:25:45 PM
+37948,11/22/2019 9:21:20 AM,Tabitha Kemnitz,In Progress,,,Service Request,Zoom Account-remove automatic alternative host,Sean Austin,12/11/2019 9:21:20 AM
+37950,11/22/2019 9:28:22 AM,David Clark Scott,Pending,12/8/2019 12:00:00 AM,,Service Request,Pending - Exited - David Hauck,Lisa Darling,12/18/2019 2:37:00 PM
+37952,11/22/2019 10:57:41 AM,Amanda Cartwright,In Progress,,,Service Request,Appt Confirmed Friday: 191206 @ 11am EST - Fwd: Your expiring remote access security certificate,Lisa Darling,12/11/2019 10:57:41 AM
+37962,11/22/2019 12:07:25 PM,Al Belote,Pending,11/14/2019 12:00:00 AM,3/1/2020 12:00:00 AM,Service Request,Fwd: [TFCCSZoomUS] Zoom is not working for me,Kami Evarts,12/11/2019 12:07:25 PM
+37991,11/25/2019 12:49:49 PM,Jonathan James,In Progress,,,Incident,Voice message from Jonathan James MB: 5205,Sean Austin,12/2/2019 12:49:49 PM
+38019,11/26/2019 2:47:19 PM,Arthur Bright,Assigned,,,Service Request,Approved: Request to purchase NordVPN software,Kami Evarts,12/13/2019 2:47:19 PM
+38021,11/26/2019 5:17:20 PM,Jeanne Evans,In Progress,,,Service Request,Exit - Margaret Rogers 11/30/19,Kami Evarts,12/16/2019 8:00:00 AM
+38040,12/1/2019 5:30:16 AM,ChurchtestE,In Progress,,,Service Request,Double-Check PrairieFyre and Mitel-Nupoint x2000 phone systems holiday schedules,Sean Austin,12/13/2019 8:00:00 AM
+38086,12/3/2019 11:15:01 AM,Jan Beard,New,,,Service Request,"New hire John Sherwood, 1/6/20",,12/17/2019 11:15:01 AM
+38087,12/3/2019 11:31:25 AM,Jan Beard,In Progress,,,Service Request,"New Hire John Sherwood, Virtual Desktop request",Sean Austin,12/17/2019 11:31:25 AM
+38092,12/3/2019 1:26:14 PM,Anna Reynolds,In Progress,,,Incident,Notification for incoming emails in Gmail,Sean Austin,12/5/2019 1:26:14 PM
+38106,12/3/2019 3:13:27 PM,Lisa Darling,In Progress,,,Service Request,GYB - Approved By Arthur Frontczak (191203),Lisa Darling,12/17/2019 3:13:27 PM
+38115,12/4/2019 8:45:58 AM,Gabriella(Brie) Burns,In Progress,,,Incident,New Printer Help,Sean Austin,12/6/2019 8:45:58 AM
+38122,12/4/2019 9:57:27 AM,Ana Gonzalez,Assigned,,,Incident,Audio issue,Maurice Coleman,12/6/2019 9:57:27 AM
+38129,12/4/2019 12:16:47 PM,Stephanie Rea,In Progress,,,Service Request,Assist with setting up maryland@compub.org on new phone,Lisa Darling,12/18/2019 12:16:47 PM
+38149,12/4/2019 4:14:06 PM,David Clark Scott,New,,,Incident,Zoom won't record - it doesn't recognize me as host?,,12/6/2019 4:14:06 PM
+38151,12/4/2019 4:52:29 PM,Ryan Vigil,In Progress,,,Service Request,Google calendar invites not received by non-employee,Sean Austin,12/19/2019 8:00:00 AM
+38161,12/5/2019 9:31:52 AM,Kendra Nordin Beato,Assigned,,,Service Request,Exit - Dwight Weingarten 12/20/2019,Lisa Darling,12/19/2019 9:31:52 AM
+38164,12/5/2019 9:47:45 AM,Kendra Nordin Beato,In Progress,,,Service Request,Exit - Riley Robinson 12/20/19,Lisa Darling,12/19/2019 9:47:45 AM
+38169,12/5/2019 11:52:38 AM,Kendra Nordin Beato,Assigned,,,Service Request,Exit Noah Robertson 12/20/19,Lisa Darling,12/19/2019 11:52:38 AM
+38172,12/5/2019 12:47:05 PM,Customer Not Found,In Progress,,,Incident,Voice message from CHELSEA      MA[6174613544] MB: 5205,Sean Austin,12/9/2019 12:47:05 PM
+38183,12/5/2019 4:19:37 PM,Christina Henderson,In Progress,,,Incident,Fwd: Phone Issues,Sean Austin,12/10/2019 8:00:00 AM
+38208,12/6/2019 9:52:56 AM,Carrie Clayton,New,,,Incident,Fwd: [TSGOnlineAccounts] NordVPN account activation,,12/10/2019 9:52:56 AM
+38219,12/6/2019 11:19:49 AM,Susan Sherwood,In Progress,,,Service Request,"PC loaner for Dec. 10, 11",Kami Evarts,12/20/2019 11:19:49 AM
+38230,12/6/2019 1:21:54 PM,Tessa Parmenter,In Progress,,,Service Request,Fwd: Your expiring remote access security certificate,Sean Austin,12/20/2019 1:21:54 PM
+38234,12/6/2019 1:54:04 PM,Timothy Broderick,In Progress,,,Incident,Phone won't make calls,Sean Austin,12/10/2019 1:54:04 PM
+38237,12/6/2019 3:38:01 PM,Taryn McNichol,In Progress,,,Incident,Voice message from TARYN MCNICHOL MB: 5205,Sean Austin,12/10/2019 3:38:01 PM
+38238,12/6/2019 3:38:18 PM,Taryn McNichol,In Progress,,,Service Request,Google Apps Support - ProjectSheet planning - an add on for Google Sheets,Lisa Darling,12/20/2019 3:38:18 PM
+38248,12/6/2019 4:34:37 PM,Tom Shea,In Progress,,,Service Request,Install New PGCalc Update,Sean Austin,1/2/2020 8:00:00 AM
+38250,12/7/2019 5:24:11 AM,ChurchtestE,Assigned,,,Service Request,Follow up with Delegates to Exited user mailboxes; can the mailbox be closed,Lisa Darling,12/20/2019 8:00:00 AM
+38254,12/9/2019 5:33:25 AM,ChurchtestE,In Progress,,,Service Request,Delete exited google users with expire date over 13 months ago,Sean Austin,1/2/2020 8:00:00 AM
+38259,12/9/2019 8:01:49 AM,Wes Davis,New,,,Incident,Download/install google backup and sync,,12/11/2019 8:01:49 AM
+38274,12/9/2019 11:44:55 AM,Stacy Shapiro,Assigned,,,Service Request,New Hire - Laurie Richardson 1\13\2020,,1/2/2020 11:44:55 AM
+38280,12/9/2019 1:49:40 PM,Kanoe Wagner,In Progress,,,Service Request,tmcemployees list updates,Kami Evarts,1/2/2020 1:49:40 PM
+38281,12/9/2019 2:20:28 PM,Jeanne Evans,In Progress,,,Service Request,Remote access connection - can't set it up,Kami Evarts,1/2/2020 2:20:28 PM
+38296,12/10/2019 4:29:06 AM,ChurchtestE,Assigned,,,Service Request,Review Cherwell Announcements for outdated posts,Lisa Darling,1/3/2020 8:00:00 AM
+38317,12/10/2019 10:45:29 AM,Delali Davies,Assigned,,,Service Request,Exit - Joshua Christian 12/9/19,Kami Evarts,1/3/2020 10:45:29 AM
+38319,12/10/2019 11:39:17 AM,Allyson Lazar,New,,,Service Request,Exiting - Shanna Smith -  191231,,1/3/2020 11:39:17 AM
+38320,12/10/2019 12:01:16 PM,Susan Sage,In Progress,,,Incident,list of ownership and permissions,Kami Evarts,12/12/2019 12:01:16 PM
+38326,12/10/2019 2:34:51 PM,Gary Bottje,In Progress,,,Incident,Investigate slow computer performance,Kami Evarts,12/10/2019 7:34:51 PM
+38327,12/10/2019 2:47:21 PM,Tony Veidelis,In Progress,,,Service Request,tmcyouthinternships@csps.com,Lisa Darling,1/3/2020 2:47:21 PM
+38335,12/11/2019 7:45:12 AM,ChurchtestE,In Progress,,,Service Request,"Check for new users that rec'd G2V memo over a week ago, enforce enrollment",Sean Austin,1/6/2020 8:00:00 AM
+38336,12/11/2019 8:04:28 AM,Larissa O'Donnell,In Progress,,,Service Request,Access Security Certificate - Appt 191218 @ 8:30am,Lisa Darling,1/6/2020 8:04:28 AM
+38338,12/11/2019 8:32:21 AM,Fiona Blair,New,,,Incident,Re: Your expiring remote access security certificate,,12/13/2019 8:32:21 AM
+38339,12/11/2019 8:37:45 AM,Jan Beard,New,,,Service Request,New Employee - Mary Alice Rose 191211,,1/6/2020 8:37:45 AM
+38345,12/11/2019 10:35:17 AM,Chaylee Bruce,In Progress,,,Incident,ENT not working,Sean Austin,12/13/2019 10:35:17 AM
+38348,12/11/2019 11:01:42 AM,Jan Beard,Assigned,,,Service Request,Voice message from Jan Beard MB: 5205,Lisa Darling,1/6/2020 11:01:42 AM
+38356,12/11/2019 1:00:17 PM,ChurchtestE,New,,,Service Request,P2 Conference Center Weekly Maintenance,,1/6/2020 1:00:17 PM
+38359,12/11/2019 2:00:40 PM,Helen Stevermer,In Progress,,,Incident,Request,Sean Austin,12/13/2019 2:00:40 PM
+38363,12/11/2019 2:28:58 PM,Emily Moreno,In Progress,,,Incident,Report Problem/Outage/Error,Sean Austin,12/13/2019 2:28:58 PM
+38364,12/11/2019 2:37:59 PM,Veronica Kline,New,,,Incident,Voice message from Veronica Kline MB: 5205,,12/13/2019 2:37:59 PM
+38365,12/11/2019 2:40:06 PM,Jan Beard,Assigned,,,Service Request,Voice message from Jan Beard MB: 5205,Lisa Darling,1/6/2020 2:40:06 PM
+38375,12/12/2019 7:40:05 AM,Nathan Mozzer,In Progress,,,Service Request,Voice Message From Nathan Mozzer,Sean Austin,1/7/2020 8:00:00 AM
+38376,12/12/2019 8:19:38 AM,Deborah Bermel,New,,,Incident,two items not working,,12/16/2019 8:19:38 AM
+38377,12/12/2019 8:32:15 AM,Customer Not Found,Assigned,,,Service Request,G Suite Alert: Mailbox enrolled in 2SV,Lisa Darling,1/7/2020 8:32:15 AM
+38379,12/12/2019 8:37:01 AM,Jeanne Evans,In Progress,,,Incident,Create email address for Board Records,Kami Evarts,12/16/2019 8:37:01 AM
+38381,12/12/2019 8:46:28 AM,Holley Eddington,Assigned,,,Service Request,Need to download Authy App,Maurice Coleman,1/7/2020 8:46:28 AM
+38386,12/12/2019 10:41:51 AM,Emily Swanson,Assigned,,,Incident,Report Problem/Outage/Error,Maurice Coleman,12/16/2019 10:41:51 AM
+38387,12/12/2019 10:51:30 AM,Larissa O'Donnell,New,,,Incident,Report Problem/Outage/Error,,12/12/2019 3:51:30 PM
+38388,12/12/2019 11:08:24 AM,Matt Orlando,New,,,Incident,Re: Your expiring remote access security certificate,,12/16/2019 11:08:24 AM
+38389,12/12/2019 11:30:27 AM,Susan Sage,New,,,Incident,access to all csbd for Google calendar,,12/16/2019 11:30:27 AM
+38390,12/12/2019 11:31:32 AM,Susan Sage,New,,,Incident,Setting up Zoom account,,12/16/2019 11:31:32 AM
+38392,12/12/2019 12:51:15 PM,Dorothy Rivera,Assigned,,,Incident,Report Problem/Outage/Error,Maurice Coleman,12/16/2019 12:51:15 PM
+38393,12/12/2019 1:00:42 PM,Cheryl Bottje,New,,,Service Request,LastPass App,,1/7/2020 1:00:42 PM
+38399,12/12/2019 3:29:22 PM,Delali Davies,In Progress,,,Incident,Is Anna on the coordinating manager's list to receive emails?,Sean Austin,12/16/2019 3:29:22 PM
+38402,12/12/2019 3:43:07 PM,Natalie Zdan,New,,,Incident,VPN causes connectivity issues with Zoom,,12/16/2019 3:43:07 PM
+38406,12/13/2019 7:31:29 AM,ChurchtestE,In Progress,,,Service Request,Check new hire lists for now active users - G2V? Security Trainng?,Sean Austin,1/8/2020 8:00:00 AM
+38407,12/13/2019 8:05:10 AM,Tessa Parmenter,In Progress,,,Incident,Fwd: Your expiring remote access security certificate,Sean Austin,12/17/2019 8:05:10 AM
+38408,12/13/2019 9:16:36 AM,Lou Marrapodi,New,,,Incident,Excel spreadsheet sometimes takes a long time to recalculate,,12/20/2019 9:16:36 AM
+38409,12/13/2019 9:22:34 AM,Brian Abbott,New,,,Incident,Report Problem/Outage/Error,,12/17/2019 9:22:34 AM
+38410,12/13/2019 10:14:08 AM,Customer Not Found,New,,,Incident,Internal email not functioning,,12/17/2019 10:14:08 AM
+38411,12/13/2019 11:36:35 AM,Diane Hanover,New,,,Incident,Re: Enabling Google 2 Step Verification,,12/17/2019 11:36:35 AM
+38412,12/13/2019 11:40:16 AM,Customer Not Found,New,,,Incident,Voice message from Fish Kathryn L[5712121815] MB: 5205,,12/17/2019 11:40:16 AM
+38413,12/13/2019 12:01:03 PM,Carrie Clayton,In Progress,,,Service Request,Friday 3pm Email Cherwell Report to Carrie Clayton and Bill James,Kami Evarts,1/8/2020 12:01:03 PM
+38414,12/13/2019 12:02:21 PM,Customer Not Found,New,,,Incident,"It's That Time Again, Tax Receipts!",,12/17/2019 12:02:21 PM
+38415,12/13/2019 12:16:21 PM,Brian Abbott,New,,,Incident,Report Problem/Outage/Error,,12/17/2019 12:16:21 PM
+38416,12/13/2019 12:21:16 PM,Terry Wyszkowski,New,,,Incident,An apology,,12/17/2019 12:21:16 PM
+38417,12/13/2019 12:27:34 PM,Geoffrey Hibbs,New,,,Incident,Report Problem/Outage/Error,,12/17/2019 12:27:34 PM
+38418,12/13/2019 12:32:39 PM,Brian Abbott,New,,,Incident,Report Problem/Outage/Error,,12/17/2019 12:32:39 PM
+38419,12/13/2019 1:19:55 PM,Deonna Heath,New,,,Incident,Not able to get into Pulse,,12/17/2019 1:19:55 PM
+38420,12/13/2019 1:44:39 PM,Tony Veidelis,New,,,Incident,Security question regarding non-employee...,,12/17/2019 1:44:39 PM
+38421,12/13/2019 2:03:21 PM,Kristen Hafford,New,,,Service Request,Hardware Support,,1/8/2020 2:03:21 PM
+38422,12/13/2019 2:11:26 PM,Kristen Hafford,New,,,Incident,Out-of-the-office: Returning Dec 17 Re: Service Request 38421 Hardware Support has been created.,,12/17/2019 2:11:26 PM
+38423,12/13/2019 2:11:59 PM,John Pisini,New,,,Incident,Re: Security question regarding non-employee...,,12/17/2019 2:11:59 PM
+38424,12/13/2019 2:43:06 PM,ChurchtestE,New,,,Service Request,Back up the Basics spreadsheet,,1/8/2020 2:43:06 PM
+Systems,,,,,,,,,
+37477,11/4/2019 7:29:10 AM,Race Brandt,Assigned,,,Service Request,Number that needs to be blocked,David Palefsky,11/19/2019 8:00:00 AM
+37947,11/22/2019 9:05:51 AM,Shanna Lee Smith,Assigned,,,Incident,Slow internet speeds today 11/22,,11/26/2019 9:05:51 AM
+38062,12/2/2019 3:47:20 PM,Jonathan James,New,,,Service Request,"P6 Wireless is ""unstable"", very slow, can it be fixed?",,12/16/2019 3:47:20 PM
+38383,12/12/2019 8:59:43 AM,Lina Joyner,New,,,Service Request,Churchofchristscientist.org - domain name needs SSL,,1/7/2020 8:59:43 AM
+TSG BRM,,,,,,,,,
+31501,3/12/2019 4:51:24 PM,Austin Kingsbery,Assigned,,,Service Request,*This Is For Tony* Re: Understand current contacts number for SFMC contract,Tony Veidelis,3/27/2019 8:00:00 AM
+,,,,Page 1 of 1,,,,,

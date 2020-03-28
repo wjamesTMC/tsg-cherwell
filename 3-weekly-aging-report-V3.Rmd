@@ -1,5 +1,5 @@
 ---
-title: "Cherwell Weekly Aging Report"
+title: "Cherwell Weekly Aging Report - Pendings Factored In"
 date: "`r format(Sys.time(), '%d %B, %Y')`" 
 output: "html_document"
 ---
@@ -38,7 +38,6 @@ library(rmarkdown)
 library(kableExtra)
 library(lubridate)
 library(stringr)
-library(googledrive)
 library(googlesheets)
 
 #--------------------------------------------------------------------
@@ -52,7 +51,7 @@ library(googlesheets)
 #
 
 # Open the data file - a Google Sheet in user's top level directory
-data_filename <- gs_title("CAR-input-2019-11-29")
+data_filename <- gs_title("CTP-input-2020-03-27")
 dat <- gs_read(data_filename, skip = 1, header = TRUE, stringsAsFactors = FALSE)
 
 # Generate the week ending data from the data file name
@@ -64,10 +63,12 @@ dat <- rename(dat, replace = c("Incident ID" = "ID",
                                "Customer Display Name" = "Customer",
                                "Incident Type" = "Type",
                                "Owned By" = "Owner",
-                               "SLA Resolve By Deadline" = "Due"))
+                               "SLA Resolve By Deadline" = "Due",
+                               "Pending End" = "PE",
+                               "Pending Start" = "PS"))
 
 # Get rid of unneeded column and row information and sort by created date
-dat <- dat %>% select(ID, Created, Customer, Type, Owner, Due)
+dat <- dat %>% select(ID, Created, Customer, Type, Owner, Due, PS, PE)
 dat <- dat %>% filter(dat$Created != "")
 
 # Shorten some fields
@@ -81,9 +82,30 @@ dat$Created <- as.Date(dat$Created, format = "%m/%d/%Y")
 dat$Due <- sub(' .*', '', dat$Due)
 dat$Due <- as.Date(dat$Due, format = "%m/%d/%Y")
 
+dat$PS <- sub(' .*', '', dat$PS)
+dat$PS <- as.Date(dat$PS, format = "%m/%d/%Y")
+
+dat$PE <- sub(' .*', '', dat$PE)
+dat$PE <- as.Date(dat$PE, format = "%m/%d/%Y")
+
 # Add column for days open (Duration)
 dat <- dat %>% mutate(Duration = difftime(as.Date(Week_Ending), dat$Created, units = "days"))
 dat <- dat %>% arrange(desc(Duration))
+
+# Set all NA values in PS and PE to 1/1/1900
+dat[is.na(dat)] = "1900-01-01"
+
+# Calculate duration time and subtract from Duration value
+for(i in 1:nrow(dat)) {
+     if(dat[i,8] > "1900-01-01") {
+          dat[i,9] <- dat[i,9] - (dat[i,8] - dat[i,7])
+     }
+     else {
+          if(dat[i,7] > "1900-01-01") {
+          dat[i,9] <- (dat[i,7] - dat[i,2])
+          }
+     }
+}
 
 # Establish groupings for the open tickets
 days_07 <- dat %>% filter(Duration <=  7) 
@@ -161,15 +183,6 @@ for (i in 1:nrow(sd_staff)) {
 # Build graphics from historical data
 #
 #--------------------------------------------------------------------
-
-# data <- 
-#   drive_get(path = "CAR-output-cherwell-stats",
-#           team_drive = as_id("1EXZYWojMctNfcIpyL_YuaM-B0l-zqa4x")) %>% 
-#   select(id) %>% 
-#   combine() %>% 
-#   gs_key(lookup = FALSE, 
-#          visibility = "private") %>% 
-#   gs_read_csv()
 
 # Open File
 data_filename <- gs_title("CAR-output-cherwell-stats")
