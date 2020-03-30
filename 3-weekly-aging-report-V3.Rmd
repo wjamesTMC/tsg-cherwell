@@ -1,5 +1,5 @@
 ---
-title: "Cherwell Weekly Aging Report - Pendings Factored In"
+title: "Cherwell Weekly Aging Report (Pending Periods)"
 date: "`r format(Sys.time(), '%d %B, %Y')`" 
 output: "html_document"
 ---
